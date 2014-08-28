@@ -1,0 +1,38 @@
+
+<form class="bg-info container" action="" id="form_setFocalLength">
+    <div class="form-group">
+        <h4>BaseViewer3d.getFocalLength(); --> {number}</h4>
+        <h5>Gets the current camera focal length.</h5>
+        <button id="bn_getFocalLength" class="btn btn-primary">Get Focal Length</button>
+        <h4>BaseViewer3d.setFocalLength(mm);</h4>
+        <h5>Sets the current cameras focal length.</h5>
+        <label for="sldr_focalLength">Focal Length {10 - 200}</label>
+        <div class="input-group">
+            <input class="form-control" name="focalLength" id="sldr_focalLength" type="range" step="1" min="10" max="200" value="50">
+            <span class="input-group-addon" id="txt_focalLength">50</span>
+        </div>
+    </div>
+</form>
+
+<script>
+    $("#bn_getFocalLength").click(function(evt) {  
+        evt.preventDefault();
+                 
+        var curFocLength = viewer.getFocalLength();
+        alert("Current Focal Length: " + curFocLength);
+    });
+    
+    $("#sldr_focalLength").on("input", function(evt) {  
+        evt.preventDefault();
+        
+        var newValue = this.value;
+        console.log("Setting focalLength = ", newValue);
+        $('#txt_focalLength').html(newValue);
+        viewer.setFocalLength(newValue);
+    });
+    
+        // get the current value of Focal Length and set the sliders current value accordingly
+    var curFocLength = viewer.getFocalLength();
+    $("#sldr_focalLength").val(curFocLength);
+    $("#txt_focalLength").html(curFocLength);
+</script>

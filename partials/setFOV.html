@@ -1,0 +1,38 @@
+
+<form class="bg-info container" action="" id="form_setFOV">
+    <div class="form-group">
+        <h4>BaseViewer3d.getFOV(); --> {number}</h4>
+        <h5>Gets the current camera vertical field of view.</h5>
+        <button id="bn_getFOV" class="btn btn-primary">Get FOV</button>
+        <h4>BaseViewer3d.setFOV(degrees);</h4>
+        <h5>Sets the current cameras vertical field of view.</h5>
+        <label for="sldr_setFov">Field of View {6.88 - 100.0}</label>
+        <div class="input-group">
+            <input class="form-control" name="fov" id="sldr_setFov" type="range" step="0.10" min="6.88" max="100.0" value="9.0">
+            <span class="input-group-addon" id="txt_fov">50</span>
+        </div>
+    </div>
+</form>
+
+<script>
+    $("#bn_getFOV").click(function(evt) {  
+        evt.preventDefault();
+                 
+        var curFOV = viewer.getFOV();
+        alert("Current FOV: " + curFOV);
+    });
+    
+    $("#sldr_setFov").on("input", function(evt) {  
+        evt.preventDefault();
+        
+        var newValue = this.value;
+        console.log("Setting FOV = " + newValue);
+        $("#txt_fov").html(newValue);
+        viewer.setFOV(newValue);
+    });
+    
+        // get the current value of Focal Length and set the sliders current value accordingly
+    var curFOV = viewer.getFOV();
+    $("#sldr_setFov").val(curFOV);
+    $("#txt_fov").html(curFOV);
+</script>

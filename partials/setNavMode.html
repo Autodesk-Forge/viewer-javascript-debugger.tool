@@ -1,0 +1,55 @@
+
+<form class="bg-info container" action="" id="form_setNavMode">
+    <div class="form-group">
+        <h4>BaseViewer3d.getNavigationMode(); --> {NAVIGATION_MODE}</h4>
+        <h5>Gets the current default navigation mode for the left mouse button / single finger drag.</h5>
+        <button id="bn_getNavigationMode" class="btn btn-primary">Get Navigation Mode</button>
+        <h4>BaseViewer3d.setNavigationMode(mode);</h4>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="pu_setNavigationMode">Navigation Mode</label>
+                <select id="pu_setNavigationMode" class="form-control" name="navigationMode">
+                    <option value="0">Orbit</option>
+                    <option value="1">Pan</option>
+                    <option value="2">Dolly</option>
+                    <option value="3">Roll</option>
+                    <option value="4">FOV</option>
+                    <option value="5">Other</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $("#bn_getNavigationMode").click(function(evt) {  
+        evt.preventDefault();
+
+        var curNavMode = viewer.getNavigationMode();
+        var navStr;
+        if (curNavMode === 0)
+            navStr = "0 - Orbit";
+        else if (curNavMode === 1)
+            navStr = "1 - Pan";
+        else if (curNavMode === 2)
+            navStr = "2 - Dolly";
+        else if (curNavMode === 3)
+            navStr = "3 - Roll";
+        else if (curNavMode === 4)
+            navStr = "4 - FOV";
+        else if (curNavMode === 5)
+            navStr = "5 - Other";
+        else
+            navStr = "ERROR - Unexpected Value";
+
+        alert("Current Navigation Mode: " + navStr);
+    });
+
+    $("#pu_setNavigationMode").change(function(evt) {  
+        evt.preventDefault();
+
+        var mode = parseInt($("#pu_setNavigationMode option:selected").val(), 10);
+        console.log("Setting Navigation Mode = " + mode);
+        viewer.setNavigationMode(mode);
+    });
+</script>

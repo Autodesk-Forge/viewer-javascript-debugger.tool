@@ -1,0 +1,35 @@
+
+<form class="bg-info container" action="" id="form_getCamera">
+    <div class="form-group">
+        <h4>BaseViewer3d.getCamera();</h4>
+        <h5>Gets the camera so it can be saved or modified by the client.</h5>
+        <button id="bn_getCamera" class="btn btn-primary">Get Camera</button>
+        <h4>BaseViewer3d.applyCamera();</h4>
+        <h5>Apply a camera (in this case, to restore the one saved on above function).</h5>
+        <button id="bn_applySavedCamera" class="btn btn-primary">Apply Camera</button>
+    </div>
+</form>
+
+<script>
+     $("#bn_getCamera").click(function(evt) {  
+         evt.preventDefault();
+                 
+         var tmpCam = viewer.getCamera();
+         _savedGlobalCamera = tmpCam.clone();
+         _savedGlobalCamera.target = tmpCam.target.clone();  // HACK:  have to clone target manually!
+                 
+         alert("Check Chrome debugger console for dump of THREE.PerspectiveCamera object");
+         console.group("LMVDBG: Current Camera =");
+         console.debug(_savedGlobalCamera);
+         console.groupEnd();
+    });
+    
+    $("#bn_applySavedCamera").click(function(evt) {  
+        evt.preventDefault();
+                
+        if (_savedGlobalCamera == null)
+            alert("No global camera saved yet.  Use getCamera() first!");
+        else
+            viewer.applyCamera(_savedGlobalCamera);
+    });
+</script>

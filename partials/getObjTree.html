@@ -1,0 +1,170 @@
+
+<form class="bg-info container" action="" id="form_getObjTree">
+    <div class="form-group">
+        <h4>BaseViewer3d.getObjectTree(callback);</h4>
+        <h5>Gets the object tree (aka "Model Structure"). Once the tree is received it will start the callback function.</h5>
+        <h5><em>NOTE: once the Object Tree is loaded, right-click on a node to get asccess to other fuctions such as hide(), isolate(), properties(), etc.</em></h5>
+        <button id="bn_getObjTree" class="btn btn-primary">Get Object Tree</button>
+    </div>
+</form>
+<div class="bg-warning container" action="" id="form_objTree">
+    <div class="form-group">
+        <h4>Object Tree</h4>
+        <div id="jstree_div">
+        </div>
+    </div>
+</div>
+
+
+<!--<link rel="stylesheet" href="./scripts/libs/jstree/dist/themes/default/style.min.css" />
+<script src="./scripts/libs/jstree/dist/jstree.js"></script>-->
+
+<script>
+        // initialize the tree
+    $("#jstree_div").jstree(
+        {   "core" : {"check_callback": true},
+            "plugins" : ["contextmenu"],
+            "contextmenu" : {
+                "items" : customRightClickTreeMenu  // callback function to fill out the items in the menu
+            }
+        }
+    );    
+    
+        // event for when the tree has changed
+    //$("#jstree_div").on("changed.jstree", function (evt, data) {
+    //    console.log(data.selected);
+    //});
+    
+        // event for when a node in the tree is selected
+    $("#jstree_div").on("select_node.jstree", function(evt, data) {
+        console.debug(data.node.data);
+        //viewer.select(data.node.data.dbId);   // selecting interferes with ability to do HIDE in context menu
+    });
+    
+        // event for the "Get Obj Tree" button
+    $("#bn_getObjTree").click(function(evt) {  
+        evt.preventDefault();
+
+        viewer.getObjectTree(function(objTree) {
+            console.group("LMVDBG: Object Tree =");
+            console.debug(objTree);
+            console.groupEnd();
+
+            var tree = $.jstree.reference("#jstree_div"); //get tree instance
+
+            if (tree.is_leaf("#"))  // # means root
+                recursiveAddChildrenToTree(tree, "#", objTree.children);
+            //else
+            //    alert("Tree already populated");
+        });
+    });
+        
+        // recursively add all the nodes in the Model Structure of LMV to the jsTree
+    function recursiveAddChildrenToTree(tree, rootNode, children) {
+        if (!children)
+            return;
+        
+        $.each(children, function(num, obj) {
+                // create a new object to attach to the tree node
+            var myObj = {};
+            myObj.text = obj.name;  // text displayed in the tree
+            myObj.data = obj;       // keep track of the original object so we can retrieve it later
+            
+            var newNode = tree.create_node(rootNode, myObj);
+            recursiveAddChildrenToTree(tree, newNode, obj.children);
+        });
+    };
+    
+        // callback function onSuccess when trying to retrieve Properties for a given object
+    function propsDisplayFunc(data) {
+        if ((data.properties == null) || (data.properties.length == 0)) {
+            alert("There are no properties for this node.");
+            return;
+        }
+            // iterate over the properties and just build a simple name value pair in a big string.
+        var tblStr = "";
+        $.each(data.properties, function(num, obj) {
+            var propPairStr = obj.displayName + ":     " + obj.displayValue + "\n";
+            tblStr += propPairStr;
+        })
+        alert(tblStr);
+    }
+    
+        // callback function onError when trying to retrieve Properties for a given object
+    function propsErrorFunc(data) {
+        alert("ERROR: Could not get properties for the selected object.");
+    }
+    
+        // get the items in the tree that are currently selected
+    function getCurrentTreeSelectedObjs() {
+        var tree = $.jstree.reference("#jstree_div"); //get tree instance
+        var selNodes = tree.get_selected(true);
+        
+        return selNodes;
+    }
+        
+        // this function is called from jsTree to provide the menu items for a right-click context menu on a tree node
+    function customRightClickTreeMenu(node) {
+        var items = {
+            "select" : {
+                "label" : "Select",
+                "action" : function (obj) {
+                    var selNodes = getCurrentTreeSelectedObjs();
+                    $.each(selNodes, function(num, treeNode) {
+                        viewer.select(treeNode.data.dbId);
+                    });
+                }
+            },
+            "isolate" : {
+                "label" : "Isolate",
+                "action" : function (obj) {
+                    var selNodes = getCurrentTreeSelectedObjs();
+                    $.each(selNodes, function(num, treeNode) {
+                        viewer.isolateById(treeNode.data.dbId);
+                    });
+                }
+            },
+            "hide" : {
+                "label" : "Hide", 
+                "action" : function (obj) {
+                    var selNodes = getCurrentTreeSelectedObjs();
+                    $.each(selNodes, function(num, treeNode) {
+                        viewer.hide(treeNode.data.dbId);
+                    });
+                }
+            },
+            "show" : {
+                "label" : "Show", 
+                "action" : function (obj) {
+                    var selNodes = getCurrentTreeSelectedObjs();
+                    $.each(selNodes, function(num, treeNode) {
+                        viewer.show(treeNode.data.dbId);
+                    });
+                }
+            },
+            "fit" : {
+                "label" : "Fit To View", 
+                "action" : function (obj) {
+                    var selNodes = getCurrentTreeSelectedObjs();
+                    $.each(selNodes, function(num, treeNode) {
+                        viewer.fitToView(treeNode.data.dbId);
+                    });
+                }
+            },
+            "properties" : {
+                "label" : "Properties", 
+                "action" : function (obj) {
+                    var selNodes = getCurrentTreeSelectedObjs();
+                    if (selNodes.length > 1) {
+                        alert("Can only get properties when a single item is selected");
+                    }
+                    else {
+                        viewer.getProperties(selNodes[0].data.dbId, propsDisplayFunc, propsErrorFunc);
+                    }
+                }
+            }
+       };
+       return items;
+    }
+            
+</script>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>LMV Dbg App</title>
+    
+        <!-- bootstarp and jQuery -->
+    <link href="./stylesheets/libs/bootstrap.min.css" rel="stylesheet">
+    <!--<script src="./scripts/libs/jquery/jquery-2.1.1.js"></script>-->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    
+        <!-- jscolor color picker library -->
+    <script src="./scripts/libs/jscolor/jscolor.js"></script>
+    
+        <!-- jsTree library -->
+    <link rel="stylesheet" href="./scripts/libs/jstree/dist/themes/default/style.min.css" />
+    <script src="./scripts/libs/jstree/dist/jstree.js"></script>
+    
+        <!-- prism syntax higlighting library -->
+    <link href="./scripts/libs/prism/prism.css" rel="stylesheet" />
+    <script src="./scripts/libs/prism/prism.js"></script>
+    
+        <!-- Autodesk Viewer (from server) -->
+    <!--<link rel="stylesheet" href="https://viewing.api.autodesk.com/viewingservice/v1/viewers/style.css" type="text/css">
+    <script src="https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.js"></script>-->
+    
+        <!-- Autodesk Viewer (from local) -->
+    <link rel="stylesheet" href="./stylesheets/libs/adsk/style.css" type="text/css">
+    <script src="./scripts/libs/adsk/viewer3D.js"></script> 
+        
+        <!-- This apps includes -->
+    <link href="./stylesheets/theme.css" rel="stylesheet">
+    <script src="./scripts/MyAuthToken.js"></script>
+    <script src="./scripts/DebugUtils.js"></script>
+ 
+    <script>
+        var viewer = null;
+        var _savedGlobalCamera = null;
+        
+        $(document).ready(function() {
+            
+            $("#codeSnippetLinks").on("click", "a", function(evt) {  
+                evt.preventDefault();
+                
+                var $link = $(evt.target);
+                //var url = "http://127.0.0.1:3000/" + $link.attr("href");  // if you need a node.js server to serve data from another service
+                var url = $link.attr("href");   // our code snippets are local to this client app so we just need a relative path
+                console.log("loading: " + url);
+                
+                    // load the form in
+                $.get(url, function(data) {
+                    var formSection = $("div.lmvDbg_swap"); // replace contents at this DOM node with new HTML
+                    formSection.html(data);
+                    formSection.hide().fadeIn(500);
+                    
+                    var sourceSection = $("code.language-markup");  // replace contents at this DOM node with source code
+                    var htmlStr = escapeHTML(data);
+                    sourceSection.html(htmlStr);
+                    Prism.highlightAll();
+                    sourceSection.hide().fadeIn(500);
+                });
+                
+            });
+            
+        });
+        
+            // prism syntax highlighter needs html escaped with ampersand chars
+        function escapeHTML(s) { 
+            return s.replace(/&/g, '&amp;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+        }
+        
+        function initialize() {
+            var authToken = new MyAuthToken();
+			
+			var options = {};
+			options.env = 'AutodeskProduction';
+			options.accessToken = authToken.get();
+			
+			//var documentId = 'urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6Y29pbnNfZGFsbGFzX3Rlc3QvR3JhbmRWaWV3SG9zcGl0YWwubndk'; // COINS
+            //var documentId = "urn:dXJuOmFkc2subml0cm9nZW46ZnMuZmlsZTo1MTA0YjA0MjRkZjE0NWI5YjExZGMyNzEyZWZlN2I3MQ==";  // Navis plant
+            //var documentId = "urn:dXJuOmFkc2subml0cm9nZW46ZnMuZmlsZTpmZjUyN2Q1YjM3NzI0NjA4YTdjNzUwYmRjYWExMTFkNA==";  // Revit Church
+            //var documentId = "urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L0FDMTEtSW5zdGl0dXRlLVZhci0yLUlGQy5pZmM="; // IFC MOdel"
+            var documentId = "urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L3ZpZXd0ZXN0MS5ydnQ=";  // ViewTest1
+        
+
+			var viewerElement = document.getElementById('viewer');
+            viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerElement, {});
+
+			Autodesk.Viewing.Initializer(options, function() {
+                viewer.initialize();
+				loadDocument(viewer, Autodesk.Viewing.Private.getAuthObject(), documentId);
+			});
+        }
+
+        function loadDocument(viewer, auth, documentId) {
+			Autodesk.Viewing.Document.load(documentId, function(document) {
+				var geometryItems = [];
+				geometryItems = Autodesk.Viewing.Document.getSubItemsWithProperties(document.getRootItem(),
+                                    {'type':'geometry', 'role':'3d'},
+                                    true);
+				
+				if (geometryItems.length > 0) {
+                       viewer.load(document.getViewablePath(geometryItems[0]));
+				}
+                
+			}, function(errorCode, errorMsg) {
+				alert('Load Error: ' + errorMsg);
+			});
+        } 
+    </script>
+</head>
+ 
+<body onload="initialize();" oncontextmenu="return false;">  <!-- NOTE: setting oncontextmenu=false allows the viewer context menu to work (for things like "Hide Selected") -->
+    <div class="container">
+        <div class="form-buffer">
+            <img id="img_logo" src="./images/logo_header.png" alt="Autodesk, Inc.">
+            <h1>LmvDbg - Test App</h1>
+        </div>
+            
+          <!-- Viewer and API function selection -->        
+        <div class="row">
+            <div class="col-md-8" id="viewer">          <!-- Viewer goes here -->        
+                <!-- Upon the viewer initalizaiton, it will append a div to the above div to insert the viewer.  It
+                    will use 100% width and height so that it will fill up whatever the above div's dimensions are. 
+                    NOTE: I had to set height in theme.css for this object or bootstrap would set height to 1px -->
+            </div>
+            <div class="col-md-3 col-md-offset-1" id="codeSnippetLinks">
+                <h4>Viewer API functions</h4>
+                <ul>
+                    <li><a href="partials/setBackgroundColor.html">setBackgroundColor()</a></li>
+                    <li><a href="partials/setGhosting.html">setGhosting()</a></li>
+                    <li><a href="partials/setNavMode.html">setNavMode()</a></li>
+                    <li><a href="partials/hideAll_showAll.html">hideAll(), showAll()</a></li>
+                    <li><a href="partials/getCamera.html">getCamera()</a></li>
+                    <li><a href="partials/setView.html">setView()</a></li>
+                    <li><a href="partials/clearSelection.html">clearSelection()</a></li>
+                    <li><a href="partials/setFocalLength.html">setFocalLength()</a></li>
+                    <li><a href="partials/setFOV.html">setFOV()</a></li>
+                    <li><a href="partials/explode.html">explode()</a></li>
+                    <li><a href="partials/getObjTree.html">getObjectTree()</a>
+                        <ul>
+                            <li>select()</li>
+                            <li>isolate()</li>
+                            <li>hide()</li>
+                            <li>show()</li>
+                            <li>fitToView()</li>
+                            <li>properties()</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group"></div><!-- doesn't do anything, just needs extra space -->
+        
+        
+        <div class="lmvDbg_swap">
+            <!-- form for a specific function will go here -->
+        </div>
+        
+        <div class="form-group"></div><!-- doesn't do anything, just needs extra space -->
+        
+        <pre class="language-markup">
+            <code class="language-markup">
+                <!-- source code for a specific example goes here -->
+            </code>  
+        </pre>
+
+    </div>
+    
+</body>
+ 
+</html>

@@ -1,0 +1,34 @@
+
+<form class="bg-info container" action="" id="form_hideAllShowAll">
+    <div class="form-group">
+        <h4>BaseViewer3d.allAreVisible();</h4>
+        <h5>Returns true if every node is visible.</h5>
+        <button id="bn_areAllVisible" class="btn btn-primary">Are All Visible?</button>
+        <h4>BaseViewer3d.hideAll();</h4>
+        <h5>Ensures everything is invisible. (** NOT IMPLEMENTED YET **)</h5>
+        <button id="bn_hideAll" class="btn btn-primary">Hide All</button>
+        <h4>BaseViewer3d.showAll();</h4>
+        <h5>Ensures everything is visible.</h5>
+        <button id="bn_showAll" class="btn btn-primary">Show All</button>
+    </div>
+</form>
+
+<script>
+    $("#bn_areAllVisible").click(function(evt) {  
+        evt.preventDefault();
+        if (viewer.areAllVisible())
+            alert("TRUE - they are");
+        else
+            alert("FALSE - they are not");
+    });
+    
+    $("#bn_hideAll").click(function(evt) {  
+        evt.preventDefault();
+        viewer.hideAll();
+    });
+            
+    $("#bn_showAll").click(function(evt) {  
+        evt.preventDefault();
+        viewer.showAll();
+    });
+</script>

@@ -1,0 +1,37 @@
+   
+<form class="bg-info container" action="" id="form_bgColor">
+    <div class="form-group">
+        <h4>BaseViewer3d.setBackgroundColor(red, green, blue, red2, green2, blue2);</h4>
+        <h5>Sets the background Color.  First 3 RGB values are for top of graident. Second 3 RGB values are for bottom of gradient.</h5>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="eb_topGradient">Top Gradient Color</label>
+                <input name="topGradient" id="eb_topGradient" class="form-control color">
+
+                <label for="eb_botGradient">Bottom Gradient Color</label>
+                <input name="botGradient" id="eb_botGradient" class="form-control color">
+            </div>
+        </div>
+        <div class="form-group form-buffer">
+            <button id="bn_setBkgdColor" class="btn btn-primary">Set Background Color</button>
+        </div>
+    </div>
+</form>
+    
+<!--<script src="./scripts/libs/jscolor/jscolor.js"></script>-->  <!-- color picker library TBD: how to get this to load from here rather than the main index.html? -->
+<script>
+     $("#bn_setBkgdColor").click(function(evt) {
+         evt.preventDefault();
+
+         console.log("setting color");
+
+         var topColor = document.getElementById("eb_topGradient").color;
+         var botColor = document.getElementById("eb_botGradient").color;
+            // jsColor gives us values in percentages, but Viewer API wants integers between 0-255;
+            // TBD: ?? Do i have to do a Math.Floor() or something to make integers?
+         viewer.setBackgroundColor(topColor.rgb[0]*255, topColor.rgb[1]*255, topColor.rgb[2]*255,
+                                  botColor.rgb[0]*255, botColor.rgb[1]*255, botColor.rgb[2]*255);
+    });
+
+    jscolor.bind();     // this will force re-init of the jscolor library and find the controls we are interested in.
+</script>

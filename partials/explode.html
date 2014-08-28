@@ -1,0 +1,30 @@
+
+<form class="bg-info container" action="" id="form_setFocalLength">
+    <div class="form-group">
+        <h4>BaseViewer3d.explode(scale);</h4>
+        <h5>Explodes the model from the center of gravity.</h5>
+        <label for="sldr_explode">Explode {0.0 - 100.0}</label>
+        <div class="input-group">
+            <input class="form-control" name="explode" id="sldr_explode" type="range" step=".01" min="0.0" max="100.0" value="0">
+            <span class="input-group-addon" id="txt_explode">0.0</span>
+        </div>
+    </div>
+</form>
+
+<script>
+        // TBD: no way to get current explode value
+    
+    $("#sldr_explode").on("input", function(evt) {  
+        evt.preventDefault();
+        
+        var newValue = this.value;
+        console.log("Setting explode = " + newValue);
+        $('#txt_explode').html(newValue);
+        viewer.explode(newValue);
+    });
+    
+        // get the current value of Explode and set the sliders current value accordingly
+    //var curExplode = viewer.getExplode();
+    //$("#sldr_explode").val(curExplode);
+    //$("#txt_explode").html(curExplode);
+</script>
