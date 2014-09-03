@@ -1,0 +1,225 @@
+
+<form class="bg-info container" id="form_curSelSet">
+    <div class="form-group">
+        <h4>Do operations with current Selection Set</h4>
+        <h5>(items selected in the viewer)</h5>
+    </div>
+        
+    <div class="form-group">
+        <label for="txt_curSelSet">Current Selection Set</label>
+        <textarea class="form-control" id="txt_curSelSet" rows="1" readonly></textarea>
+    </div>
+    
+    <div class="form-group">
+        <button id="bn_deselect" class="btn btn-primary">Deselect</button>
+        <button id="bn_clearSelection" class="btn btn-primary">Clear</button>
+        <button id="bn_hide" class="btn btn-primary">Hide</button>
+        <button id="bn_isolate" class="btn btn-primary">Isolate</button>
+        <button id="bn_fitToView" class="btn btn-primary">Fit To View</button>
+        <button id="bn_properties" class="btn btn-primary">Properties</button>
+    </div>
+    
+    <div class="form-group">
+        <label for="txt_manSelSet">Manual Selection Set</label>
+        <textarea class="form-control" id="txt_manSelSet" rows="1"></textarea>
+    </div>
+    
+    <div class="form-group">
+        <button id="bn_manSelect" class="btn btn-primary">Select</button>
+        <button id="bn_manToggleSelect" class="btn btn-primary">Toggle Select</button>
+        <button id="bn_manDeselect" class="btn btn-primary">Deselect</button>
+        <button id="bn_manHide" class="btn btn-primary">Hide</button>
+        <button id="bn_manToggleVis" class="btn btn-primary">Toggle Visibility</button>
+        <button id="bn_manIsolate" class="btn btn-primary">Isolate</button>
+        <button id="bn_manFitToView" class="btn btn-primary">Fit To View</button>
+        <button id="bn_manProperties" class="btn btn-primary">Properties</button>
+    </div>
+    
+</form>
+
+<script>
+        // callbacks for the Current Selection Set
+    $("#bn_deselect").click(function(evt) {  
+        evt.preventDefault();
+
+        viewer.deselect(_curSelSet);
+    });
+
+    $("#bn_clearSelection").click(function(evt) {  
+        evt.preventDefault();
+
+        viewer.clearSelection();
+    });
+
+    $("#bn_hide").click(function(evt) {  
+        evt.preventDefault();
+
+        viewer.hide(_curSelSet);
+    });
+
+    $("#bn_fitToView").click(function(evt) {  
+        evt.preventDefault();
+
+        viewer.fitToView(_curSelSet);
+    });
+    
+    $("#bn_isolate").click(function(evt) {  
+        evt.preventDefault();
+
+        viewer.isolateById(_curSelSet);
+    });
+
+    $("#bn_properties").click(function(evt) {  
+        evt.preventDefault();
+        
+        if (_curSelSet.length > 1) {
+            alert("Can only get properties when a single item is selected");
+        }
+        else {
+            viewer.getProperties(_curSelSet[0], propsDisplayFuncTmp, propsErrorFuncTmp);
+        }
+    });
+
+       
+        // callbacks for the Manual Selection Set
+    $("#bn_manSelect").click(function(evt) {  
+        evt.preventDefault();
+                
+        var manSelSet = parseManualSelSet();
+        if (manSelSet.length == 0)
+            alert("No Object IDs specified.");
+        else
+            viewer.select(manSelSet);
+    });
+    
+    $("#bn_manToggleSelect").click(function(evt) {  
+        evt.preventDefault();
+                
+        var manSelSet = parseManualSelSet();
+        if (manSelSet.length == 0)
+            alert("No Object IDs specified.");
+        else if (manSelSet.length > 1)
+            alert("Only one item can be specified.");
+        else
+            viewer.toggleSelect(manSelSet[0]);  // can only pass a single id, not an array
+    });
+    
+    $("#bn_manDeselect").click(function(evt) {  
+        evt.preventDefault();
+                
+        var manSelSet = parseManualSelSet();
+        if (manSelSet.length == 0)
+            alert("No Object IDs specified.");
+        else
+            viewer.deselect(manSelSet);
+    });
+    
+    $("#bn_manHide").click(function(evt) {  
+        evt.preventDefault();
+                
+        var manSelSet = parseManualSelSet();
+        if (manSelSet.length == 0)
+            alert("No Object IDs specified.");
+        else
+            viewer.hide(manSelSet);
+    });
+    
+    $("#bn_manToggleVis").click(function(evt) {  
+        evt.preventDefault();
+                
+        var manSelSet = parseManualSelSet();
+        if (manSelSet.length == 0)
+            alert("No Object IDs specified.");
+        else if (manSelSet.length > 1)
+            alert("Only one item can be specified.");
+        else
+            viewer.toggleVisibility(manSelSet[0]);  // can only pass a single id, not an array
+    });
+    
+    $("#bn_manIsolate").click(function(evt) {  
+        evt.preventDefault();
+                
+        var manSelSet = parseManualSelSet();
+        if (manSelSet.length == 0)
+            alert("No Object IDs specified.");
+        else
+            viewer.isolateById(manSelSet);
+    });
+    
+    $("#bn_manFitToView").click(function(evt) {  
+        evt.preventDefault();
+                
+        var manSelSet = parseManualSelSet();
+        if (manSelSet.length == 0)
+            alert("No Object IDs specified.");
+        else
+            viewer.fitToView(manSelSet);
+    });
+    
+    $("#bn_manProperties").click(function(evt) {  
+        evt.preventDefault();
+        
+        var manSelSet = parseManualSelSet();
+        if (manSelSet.length == 0) {
+            alert("No Object ID specified.");
+        }
+        else if (manSelSet.length > 1) {
+            alert("Can only get properties when a single item is selected");
+        }
+        else {
+            viewer.getProperties(manSelSet[0], propsDisplayFuncTmp, propsErrorFuncTmp);
+        }
+    });
+    
+        // parse the input string to get all the individual ids of the manual selection set
+    function parseManualSelSet() {
+        var usrStr = $("#txt_manSelSet").val();
+        var tmpStr = usrStr.replace(/[\[\]']+/g,'');   // remove array brackets if they included them
+        var temp = new Array();
+            // this will return an array with strings "1", "2", etc.
+        temp = tmpStr.split(",");
+            // now convert to strings
+        for (a in temp) {
+            temp[a] = parseInt(temp[a], 10);
+        }
+        
+        return temp;
+    }
+    
+    function propsDisplayFuncTmp(data) {
+        if ((data.properties == null) || (data.properties.length == 0)) {
+            alert("There are no properties for this node.");
+            return;
+        }
+            // iterate over the properties and just build a simple name value pair in a big string.
+        var tblStr = "";
+        $.each(data.properties, function(num, obj) {
+            var propPairStr = obj.displayName + ":     " + obj.displayValue + "\n";
+            tblStr += propPairStr;
+        });
+        alert(tblStr);
+    }
+
+    function propsErrorFuncTmp(data) {
+        alert("ERROR: Could not get properties for the selected object.");
+    }
+        
+    function printCurrentSelSet() {
+        var tmpStr;
+        
+        if (_curSelSet.length == 0) {
+            tmpStr = "*NONE*"
+        }
+        else {
+            tmpStr = "[ " + _curSelSet + " ]";
+        }
+        $("#txt_curSelSet").val(tmpStr); 
+    }
+    
+    viewer.addEventListener('selection', printCurrentSelSet);
+
+    printCurrentSelSet();   // print the current value to init the form.
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+
+</script>
