@@ -26,11 +26,82 @@
     
         <!-- Autodesk Viewer (from server) -->
     <!--<link rel="stylesheet" href="https://viewing.api.autodesk.com/viewingservice/v1/viewers/style.css" type="text/css">
-    <script src="https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.js"></script>-->
+    <script src="https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js"></script>-->
     
         <!-- Autodesk Viewer (from local) -->
-    <link rel="stylesheet" href="./stylesheets/libs/adsk/style.css" type="text/css">
-    <script src="./scripts/libs/adsk/viewer3D.js"></script> 
+    <!--<link rel="stylesheet" href="./stylesheets/libs/adsk/style.css" type="text/css">
+    <script src="./scripts/libs/adsk/viewer3D.js"></script>-->
+    
+    <script>
+            /* This section handles conditional inclusion of the Adsk viewer CSS and JS files
+            ** based on whether you want them to come from the local (cached) directory, or the live
+            ** online (current) version.  You can also choose to whether you want the debug version
+            ** of the JS file or the minified version.
+            **
+            ** pass args to the URL:  https://127.0.0.1/index.html?local=1&debug=1
+            ** if no args are passed, its the same as local=0, debug=0
+            */
+        
+            // get the arguments passed as part of the URL
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+                vars[key] = value;
+            });
+            return vars;
+        }
+        
+            // see what values were specified (if none, they will be undefined and default to local=0, debug=0)
+        var loadDebugViewerJs = getUrlVars()["debug"];
+        var loadLocalJs = getUrlVars()["local"];
+
+            // load the specified CSS file
+        if (loadLocalJs == 1) {
+            console.log("LmvDbg: loading local version of viewer css...");
+            loadAdskViewingCss('./stylesheets/libs/adsk/style.css');
+        }
+        else {
+            console.log("LmvDbg: loading online version of viewer css...");
+            loadAdskViewingCss('https://viewing.api.autodesk.com/viewingservice/v1/viewers/style.css');
+        }
+            
+        function loadAdskViewingCss(path) {
+            $('<link/>', {
+                rel: 'stylesheet',
+               type: 'text/css',
+               href: path
+            }).appendTo('head');
+        }
+        
+            // load the specified JS file
+        if (loadLocalJs == 1) {
+            if (loadDebugViewerJs == 1) {
+                console.log("LmvDbg: loading local/debug version of viewer js...");
+                loadAdskViewingJs("./scripts/libs/adsk/viewer3D.js");
+            }
+            else {
+                console.log("LmvDbg: loading local/minified version of viewer js...");
+                loadAdskViewingJs("./scripts/libs/adsk/viewer3D.min.js");
+            }
+        }
+        else {
+            if (loadDebugViewerJs == 1) {
+                console.log("LmvDbg: loading online/debug version of viewer js...");
+                loadAdskViewingJs("https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.js");
+            }
+            else {
+                console.log("LmvDbg: loading online/minified version of viewer js...");
+                loadAdskViewingJs("https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js");
+            }
+        }
+        
+        function loadAdskViewingJs(path) {
+            $.ajaxSetup({async:false});
+            $.getScript(path);
+            $.ajaxSetup({async:true});
+        }
+    
+    </script>
         
         <!-- This apps includes -->
     <link href="./stylesheets/theme.css" rel="stylesheet">
@@ -38,8 +109,10 @@
     <script src="./scripts/DebugUtils.js"></script>
  
     <script>
+        
         var viewer = null;
         var _savedGlobalCamera = null;
+        var _curSelSet = [];    // init to empty array
         
         $(document).ready(function() {
             
@@ -49,7 +122,7 @@
                 var $link = $(evt.target);
                 //var url = "http://127.0.0.1:3000/" + $link.attr("href");  // if you need a node.js server to serve data from another service
                 var url = $link.attr("href");   // our code snippets are local to this client app so we just need a relative path
-                console.log("loading: " + url);
+                console.log("LmvDbg: loading " + url);
                 
                     // load the form in
                 $.get(url, function(data) {
@@ -97,6 +170,11 @@
                 viewer.initialize();
 				loadDocument(viewer, Autodesk.Viewing.Private.getAuthObject(), documentId);
 			});
+            
+            viewer.addEventListener('selection', function (event) {
+                _curSelSet = event.dbIdArray;
+                console.log("Selection Set: ", _curSelSet);
+            });
         }
 
         function loadDocument(viewer, auth, documentId) {
@@ -123,8 +201,10 @@
             <img id="img_logo" src="./images/logo_header.png" alt="Autodesk, Inc.">
             <h1>LmvDbg - Test App</h1>
         </div>
+    </div>
             
-          <!-- Viewer and API function selection -->        
+          <!-- Viewer and API function selection -->
+    <div class="container">
         <div class="row">
             <div class="col-md-8" id="viewer">          <!-- Viewer goes here -->        
                 <!-- Upon the viewer initalizaiton, it will append a div to the above div to insert the viewer.  It
@@ -154,19 +234,23 @@
                             <li>properties()</li>
                         </ul>
                     </li>
+                    <li><a href="partials/curSelectionSet.html">** selection set **</a></li>
                 </ul>
             </div>
         </div>
+    </div>
+    
+    <br/>
 
-        <div class="form-group"></div><!-- doesn't do anything, just needs extra space -->
-        
-        
+    <div class="container">
         <div class="lmvDbg_swap">
             <!-- form for a specific function will go here -->
         </div>
-        
-        <div class="form-group"></div><!-- doesn't do anything, just needs extra space -->
-        
+    </div>
+    
+    <br/>
+    
+    <div class="container">        
         <pre class="language-markup">
             <code class="language-markup">
                 <!-- source code for a specific example goes here -->

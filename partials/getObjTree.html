@@ -16,6 +16,7 @@
 </div>
 
 
+    <!-- These are the includes for the jstree library, but need to include them from index.html -->
 <!--<link rel="stylesheet" href="./scripts/libs/jstree/dist/themes/default/style.min.css" />
 <script src="./scripts/libs/jstree/dist/jstree.js"></script>-->
 
@@ -30,11 +31,6 @@
         }
     );    
     
-        // event for when the tree has changed
-    //$("#jstree_div").on("changed.jstree", function (evt, data) {
-    //    console.log(data.selected);
-    //});
-    
         // event for when a node in the tree is selected
     $("#jstree_div").on("select_node.jstree", function(evt, data) {
         console.debug(data.node.data);
@@ -46,7 +42,7 @@
         evt.preventDefault();
 
         viewer.getObjectTree(function(objTree) {
-            console.group("LMVDBG: Object Tree =");
+            console.group("LmvDbg: Object Tree =");
             console.debug(objTree);
             console.groupEnd();
 
@@ -54,8 +50,8 @@
 
             if (tree.is_leaf("#"))  // # means root
                 recursiveAddChildrenToTree(tree, "#", objTree.children);
-            //else
-            //    alert("Tree already populated");
+            else
+                console.log("LmvDbg: Tree already populated, skipping.");
         });
     });
         
@@ -166,5 +162,7 @@
        };
        return items;
     }
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
             
 </script>
