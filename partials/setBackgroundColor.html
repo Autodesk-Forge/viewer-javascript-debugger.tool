@@ -29,7 +29,7 @@
          var botColor = document.getElementById("eb_botGradient").color;
             // jsColor gives us values in percentages, but Viewer API wants integers between 0-255;
             // TBD: ?? Do i have to do a Math.Floor() or something to make integers?
-         viewer.setBackgroundColor(topColor.rgb[0]*255, topColor.rgb[1]*255, topColor.rgb[2]*255,
+         _viewer.setBackgroundColor(topColor.rgb[0]*255, topColor.rgb[1]*255, topColor.rgb[2]*255,
                                   botColor.rgb[0]*255, botColor.rgb[1]*255, botColor.rgb[2]*255);
     });
 

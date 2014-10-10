@@ -34,14 +34,15 @@
         // event for when a node in the tree is selected
     $("#jstree_div").on("select_node.jstree", function(evt, data) {
         console.debug(data.node.data);
-        //viewer.select(data.node.data.dbId);   // selecting interferes with ability to do HIDE in context menu
+
+        //_viewer.select(data.node.data.dbId);   // selecting interferes with ability to do HIDE in context menu
     });
     
         // event for the "Get Obj Tree" button
     $("#bn_getObjTree").click(function(evt) {  
         evt.preventDefault();
 
-        viewer.getObjectTree(function(objTree) {
+        _viewer.getObjectTree(function(objTree) {
             console.group("LmvDbg: Object Tree =");
             console.debug(objTree);
             console.groupEnd();
@@ -95,7 +96,7 @@
     function getCurrentTreeSelectedObjs() {
         var tree = $.jstree.reference("#jstree_div"); //get tree instance
         var selNodes = tree.get_selected(true);
-        
+                
         return selNodes;
     }
         
@@ -107,7 +108,7 @@
                 "action" : function (obj) {
                     var selNodes = getCurrentTreeSelectedObjs();
                     $.each(selNodes, function(num, treeNode) {
-                        viewer.select(treeNode.data.dbId);
+                        _viewer.select(treeNode.data.dbId);
                     });
                 }
             },
@@ -116,7 +117,7 @@
                 "action" : function (obj) {
                     var selNodes = getCurrentTreeSelectedObjs();
                     $.each(selNodes, function(num, treeNode) {
-                        viewer.isolateById(treeNode.data.dbId);
+                        _viewer.isolateById(treeNode.data.dbId);
                     });
                 }
             },
@@ -125,7 +126,7 @@
                 "action" : function (obj) {
                     var selNodes = getCurrentTreeSelectedObjs();
                     $.each(selNodes, function(num, treeNode) {
-                        viewer.hide(treeNode.data.dbId);
+                        _viewer.hide(treeNode.data.dbId);
                     });
                 }
             },
@@ -134,7 +135,7 @@
                 "action" : function (obj) {
                     var selNodes = getCurrentTreeSelectedObjs();
                     $.each(selNodes, function(num, treeNode) {
-                        viewer.show(treeNode.data.dbId);
+                        _viewer.show(treeNode.data.dbId);
                     });
                 }
             },
@@ -143,7 +144,7 @@
                 "action" : function (obj) {
                     var selNodes = getCurrentTreeSelectedObjs();
                     $.each(selNodes, function(num, treeNode) {
-                        viewer.fitToView(treeNode.data.dbId);
+                        _viewer.fitToView(treeNode.data.dbId);
                     });
                 }
             },
@@ -155,7 +156,7 @@
                         alert("Can only get properties when a single item is selected");
                     }
                     else {
-                        viewer.getProperties(selNodes[0].data.dbId, propsDisplayFunc, propsErrorFunc);
+                        _viewer.getProperties(selNodes[0].data.dbId, propsDisplayFunc, propsErrorFunc);
                     }
                 }
             }

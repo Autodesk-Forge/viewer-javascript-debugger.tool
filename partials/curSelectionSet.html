@@ -42,31 +42,31 @@
     $("#bn_deselect").click(function(evt) {  
         evt.preventDefault();
 
-        viewer.deselect(_curSelSet);
+        _viewer.deselect(_curSelSet);
     });
 
     $("#bn_clearSelection").click(function(evt) {  
         evt.preventDefault();
 
-        viewer.clearSelection();
+        _viewer.clearSelection();
     });
 
     $("#bn_hide").click(function(evt) {  
         evt.preventDefault();
 
-        viewer.hide(_curSelSet);
+        _viewer.hide(_curSelSet);
     });
 
     $("#bn_fitToView").click(function(evt) {  
         evt.preventDefault();
 
-        viewer.fitToView(_curSelSet);
+        _viewer.fitToView(_curSelSet);
     });
     
     $("#bn_isolate").click(function(evt) {  
         evt.preventDefault();
 
-        viewer.isolateById(_curSelSet);
+        _viewer.isolateById(_curSelSet);
     });
 
     $("#bn_properties").click(function(evt) {  
@@ -76,7 +76,7 @@
             alert("Can only get properties when a single item is selected");
         }
         else {
-            viewer.getProperties(_curSelSet[0], propsDisplayFuncTmp, propsErrorFuncTmp);
+            _viewer.getProperties(_curSelSet[0], propsDisplayFuncTmp, propsErrorFuncTmp);
         }
     });
 
@@ -89,7 +89,7 @@
         if (manSelSet.length == 0)
             alert("No Object IDs specified.");
         else
-            viewer.select(manSelSet);
+            _viewer.select(manSelSet);
     });
     
     $("#bn_manToggleSelect").click(function(evt) {  
@@ -101,7 +101,7 @@
         else if (manSelSet.length > 1)
             alert("Only one item can be specified.");
         else
-            viewer.toggleSelect(manSelSet[0]);  // can only pass a single id, not an array
+            _viewer.toggleSelect(manSelSet[0]);  // can only pass a single id, not an array
     });
     
     $("#bn_manDeselect").click(function(evt) {  
@@ -111,7 +111,7 @@
         if (manSelSet.length == 0)
             alert("No Object IDs specified.");
         else
-            viewer.deselect(manSelSet);
+            _viewer.deselect(manSelSet);
     });
     
     $("#bn_manHide").click(function(evt) {  
@@ -121,7 +121,7 @@
         if (manSelSet.length == 0)
             alert("No Object IDs specified.");
         else
-            viewer.hide(manSelSet);
+            _viewer.hide(manSelSet);
     });
     
     $("#bn_manToggleVis").click(function(evt) {  
@@ -133,7 +133,7 @@
         else if (manSelSet.length > 1)
             alert("Only one item can be specified.");
         else
-            viewer.toggleVisibility(manSelSet[0]);  // can only pass a single id, not an array
+            _viewer.toggleVisibility(manSelSet[0]);  // can only pass a single id, not an array
     });
     
     $("#bn_manIsolate").click(function(evt) {  
@@ -143,7 +143,7 @@
         if (manSelSet.length == 0)
             alert("No Object IDs specified.");
         else
-            viewer.isolateById(manSelSet);
+            _viewer.isolateById(manSelSet);
     });
     
     $("#bn_manFitToView").click(function(evt) {  
@@ -153,7 +153,7 @@
         if (manSelSet.length == 0)
             alert("No Object IDs specified.");
         else
-            viewer.fitToView(manSelSet);
+            _viewer.fitToView(manSelSet);
     });
     
     $("#bn_manProperties").click(function(evt) {  
@@ -167,7 +167,7 @@
             alert("Can only get properties when a single item is selected");
         }
         else {
-            viewer.getProperties(manSelSet[0], propsDisplayFuncTmp, propsErrorFuncTmp);
+            _viewer.getProperties(manSelSet[0], propsDisplayFuncTmp, propsErrorFuncTmp);
         }
     });
     
@@ -216,7 +216,7 @@
         $("#txt_curSelSet").val(tmpStr); 
     }
     
-    viewer.addEventListener('selection', printCurrentSelSet);
+    _viewer.addEventListener('selection', printCurrentSelSet);
 
     printCurrentSelSet();   // print the current value to init the form.
     

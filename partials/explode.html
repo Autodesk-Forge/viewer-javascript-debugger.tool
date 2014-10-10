@@ -17,10 +17,13 @@
     $("#sldr_explode").on("input", function(evt) {  
         evt.preventDefault();
         
+        if (_viewer.model.is2d())
+            console.log("LmvDbg: loaded asset is 2D, calling explode() is not advised!");
+        
         var newValue = this.value;
         console.log("Setting explode = " + newValue);
         $('#txt_explode').html(newValue);
-        viewer.explode(newValue);
+        _viewer.explode(newValue);
     });
     
         // get the current value of Explode and set the sliders current value accordingly

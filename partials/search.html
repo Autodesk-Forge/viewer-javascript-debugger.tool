@@ -1,0 +1,51 @@
+
+<form class="bg-info container" action="" id="form_search">
+    <div class="form-group">
+        <h4>BaseViewer3d.search(text, onSuccessCallback, onErrorCallback);</h4>
+        <h5>Search for items.</h5>
+        <div class="form-group">
+            <label for="txt_search">Search String</label>
+            <input class="form-control" id="txt_search"></input>
+        </div>
+        <button id="bn_search" class="btn btn-primary">Search</button>
+        <h6>** output results to Chrome debugger console **</h6>
+    </div>
+</form>
+
+<script>
+    $("#bn_search").click(function(evt) {  
+        evt.preventDefault();
+                
+        var usrStr = $("#txt_search").val();
+        if (usrStr.length == 0)
+            alert("No search string specified.");
+        else {
+            _viewer.search(usrStr, function (idArray) {
+                _viewer.isolateById(idArray);  // select them in the viewer
+                
+                console.log("LmvDbg - Search Results (ids): %O", idArray);
+                
+                    // now go retrieve them and dump them to the debugger console
+                var objPropsArray = [];
+                $.each(idArray,function(num, dbid) {
+                    _viewer.getProperties(dbid,
+                        function(propData) {
+                            objPropsArray.push(propData);
+                        },
+                        function(errCode, messageStr) {
+                            console.log("ERROR: " + errCode + " " + messageStr);
+                        }
+                    );
+                });
+                
+                // NOTE: debugger will show this array with 0 items, but actually has correct number when you expand it,
+                // presumably because of the asyncrhonous call above.  Later I will try out a $.when() clause
+                // to see if I can fix this. -- jma
+                console.log("LmvDbg - Search Results (props): %O", objPropsArray);
+            });
+        }
+    });
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+
+</script>

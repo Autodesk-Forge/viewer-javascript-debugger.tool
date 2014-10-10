@@ -16,7 +16,7 @@
 <script>
     $("#bn_areAllVisible").click(function(evt) {  
         evt.preventDefault();
-        if (viewer.areAllVisible())
+        if (_viewer.areAllVisible())
             alert("TRUE - they are");
         else
             alert("FALSE - they are not");
@@ -24,12 +24,12 @@
     
     $("#bn_hideAll").click(function(evt) {  
         evt.preventDefault();
-        viewer.hideAll();
+        _viewer.hideAll();
     });
             
     $("#bn_showAll").click(function(evt) {  
         evt.preventDefault();
-        viewer.showAll();
+        _viewer.showAll();
     });
     
     console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");

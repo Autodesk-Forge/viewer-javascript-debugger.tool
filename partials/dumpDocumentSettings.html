@@ -1,0 +1,91 @@
+
+<form class="bg-info container" action="" id="form_dumpNavSettings">
+    <div class="form-group form-buffer">
+        <h4>Document object settings</h4>
+        <h5>Dumps values of the Navigation object into Chrome debugger</h5>
+        <button id="bn_dumpNavSettings" class="btn btn-primary">Get Document Settings</button>
+    </div>
+    <div class="form-group form-buffer row">
+        <div class="col-md-4">
+            <label for="pu_viewToDebug">Item (View)</label>
+            <select id="pu_viewToDebug" class="form-control" name="viewToDebug">
+                <!-- Options filled in by function below: loadViewMenuOptionsDebug() -->
+            </select>
+        </div>
+    </div>
+</form>
+
+<script>
+     $("#bn_dumpNavSettings").click(function(evt) {  
+         evt.preventDefault();
+                 
+         alert("Check Chrome debugger console for dump of Viewer.navigation object");
+         console.group("LmvDbg: Document object settings =");
+         
+         console.log("Document: %O", _loadedDocument);
+         
+         console.log("doc.getPath: %s", _loadedDocument.getPath());
+         console.log("doc.getPropertyDbPath: %s", _loadedDocument.getPropertyDbPath());
+         console.log("doc.getRootItem: %O", _loadedDocument.getRootItem());
+         console.log("3D Views: %O", _views3D);
+         console.log("2D Views: %O", _views2D);
+
+         console.groupEnd();
+    });
+    
+            // populate the popup menu with the avaialable views to load (from the array in LoadModel.js)
+    function loadViewMenuOptionsDebug() {
+        var sel = $("#pu_viewToDebug");
+
+        sel.find("option").remove().end();  // remove all existing options
+
+                // add the 3D options
+        $.each(_views3D, function(i, item) {
+            sel.append($("<option>", { 
+                value: i,
+                text : item.name 
+            }));
+        });
+
+        sel.append($("<option disabled>─────────────────</option>"));    // add a separator
+
+            // add the 2D options
+        $.each(_views2D, function(i, item) {
+            sel.append($("<option>", { 
+                value: i + 1000,    // make 2D views have a value greater than 1000 so we can tell from 3D
+                text : item.name 
+            }));
+        });
+
+        $("#pu_viewToDebug").trigger("change");    // trigger event on the default selection
+    }
+
+        // user selected a new view to debug
+    $("#pu_viewToDebug").change(function(evt) {
+        evt.preventDefault();
+
+        var index = parseInt($("#pu_viewToDebug option:selected").val(), 10);
+        var itemObj = null;
+
+        if (index >= 1000) {    // 2D views we gave a higher index to in the Popup menu
+            index -= 1000;
+            itemObj = _views2D[index];
+        }
+        else {
+            itemObj = _views3D[index];
+        }
+
+        console.group("LmvDbg: Item = " + itemObj.name);
+        
+        console.log("doc.getViewablePath: %s", _loadedDocument.getViewablePath(itemObj));
+        console.log("doc.getThumbnailPath: %s", _loadedDocument.getThumbnailPath(itemObj));
+        console.log("doc.getNumViews: %d", _loadedDocument.getNumViews(itemObj));
+        
+        console.groupEnd();
+    });
+        
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+    
+    loadViewMenuOptionsDebug();
+
+</script>

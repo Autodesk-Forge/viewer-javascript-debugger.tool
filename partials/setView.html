@@ -16,81 +16,67 @@
 <script>
     $("#bn_cameraTop").click(function(evt) {  
         evt.preventDefault();
+        
+        _viewer.navigation.setWorldUpVector(new THREE.Vector3(0, 0, 1));
 
-        /*var bbox = viewer.model.getBoundingBox();
 
-            // [position-x, position-y, position-z, target-x, target-y, target-z, up-x, up-y, up-z, aspect, fov (radians), orthoHeight, isPerspective (0=perspective, 1=ortho)]
-        var params = [0, 0, 1000,   // position
-                      0, 0, 0,      // target
-                      0, 1, 0,      // up
-                      1.5,          // aspect
-                      45,           // fov
-                      100,          // ortho height
-                      1];           // perspective/ortho
-
-        viewer.setViewFromArray(params);*/
-
-        var newPos = new THREE.Vector3(0, 0, 1000);     // TBD: for some reason top and bottom views need vector to have greater length.
+        var newPos = new THREE.Vector3(0, 0, 100);     // TBD: for some reason top and bottom views need vector to have greater length.
         var newTarget = new THREE.Vector3(0, 0, 0);
-        viewer.navigation.setView(newPos, newTarget);
+        _viewer.navigation.setView(newPos, newTarget);
+        
+        _viewer.fitToView(true);
     });
 
     $("#bn_cameraBottom").click(function(evt) {  
         evt.preventDefault();
+        
+        _viewer.navigation.setWorldUpVector(new THREE.Vector3(0, 0, 1));
 
-        var newPos = new THREE.Vector3(0, 0, -1000);
+        var newPos = new THREE.Vector3(0, 0, -100);
         var newTarget = new THREE.Vector3(0, 0, 0);
-        viewer.navigation.setView(newPos, newTarget);
+        _viewer.navigation.setView(newPos, newTarget);
 
-        viewer.fitToView(true);
+        _viewer.fitToView(true);
     });
 
     $("#bn_cameraFront").click(function(evt) {  
         evt.preventDefault();
 
-        var newPos = new THREE.Vector3(0, -1, 0);
+        var newPos = new THREE.Vector3(0, -100, 0);
         var newTarget = new THREE.Vector3(0, 0, 0);
-        viewer.navigation.setView(newPos, newTarget);
+        _viewer.navigation.setView(newPos, newTarget);
 
-        viewer.fitToView(true);
+        _viewer.fitToView(true);
     });
 
     $("#bn_cameraBack").click(function(evt) {  
         evt.preventDefault();
 
-        var bbox = viewer.model.getBoundingBox();
-
-        var newPos = new THREE.Vector3(0, 1, 0);
+        var newPos = new THREE.Vector3(0, 100, 0);
         var newTarget = new THREE.Vector3(0, 0, 0);
-        viewer.navigation.setView(newPos, newTarget);
+        _viewer.navigation.setView(newPos, newTarget);
 
-        viewer.fitToView(true);
+        _viewer.fitToView(true);
     });
 
     $("#bn_cameraLeft").click(function(evt) {  
         evt.preventDefault();
 
-        var bbox = viewer.model.getBoundingBox();
-
-        var newPos = new THREE.Vector3(-1, 0, 0);
+        var newPos = new THREE.Vector3(-100, 0, 0);
         var newTarget = new THREE.Vector3(0, 0, 0);
-        viewer.navigation.setView(newPos, newTarget);
+        _viewer.navigation.setView(newPos, newTarget);
 
-        viewer.fitToView(true);
+        _viewer.fitToView(true);
     });
 
     $("#bn_cameraRight").click(function(evt) {  
         evt.preventDefault();
 
-        /*var tmpCam = viewer.getCamera();
-        tmpCam.position.set(1000, 0, 0);
-        viewer.applyCamera(tmpCam);*/
-
-        var newPos = new THREE.Vector3(1, 0, 0);
+        var newPos = new THREE.Vector3(100, 0, 0);
         var newTarget = new THREE.Vector3(0, 0, 0);
-        viewer.navigation.setView(newPos, newTarget);
+        _viewer.navigation.setView(newPos, newTarget);
 
-        viewer.fitToView(true);
+        _viewer.fitToView(true);
     });
     
     console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");

@@ -1,0 +1,51 @@
+
+<form class="bg-info container" action="" id="form_dumpNavSettings">
+    <div class="form-group">
+        <h4>Navigation object settings</h4>
+        <h5>Dumps values of the Navigation object into Chrome debugger</h5>
+        <button id="bn_dumpNavSettings" class="btn btn-primary">Get Navigation Settings</button>
+    </div>
+</form>
+
+<script>
+     $("#bn_dumpNavSettings").click(function(evt) {  
+         evt.preventDefault();
+                 
+         alert("Check Chrome debugger console for dump of Viewer.navigation object");
+         console.group("LmvDbg: Navigation object settings =");
+         
+         console.log("Navigation: %O", _viewer.navigation);
+         
+         console.log("nav.getCamera: %O", _viewer.navigation.getCamera());
+         console.log("nav.getCameraRightVector: %O", _viewer.navigation.getCameraRightVector());
+         console.log("nav.getCameraUpVector: %O", _viewer.navigation.getCameraUpVector());
+         console.log("nav.getEyeVector: %O", _viewer.navigation.getEyeVector());
+         console.log("nav.getFocalLength: %f", _viewer.navigation.getFocalLength());
+         console.log("nav.getFovMax: %f", _viewer.navigation.getFovMax());
+         console.log("nav.getFovMin: %f", _viewer.navigation.getFovMin());
+         console.log("nav.getHorizontalFov: %f", _viewer.navigation.getHorizontalFov());
+         console.log("nav.getIsLocked: %s", _viewer.navigation.getIsLocked());
+         console.log("nav.getOrbitPastWorldPoles: %s", _viewer.navigation.getOrbitPastWorldPoles());
+         console.log("nav.getPivotPoint: %O", _viewer.navigation.getPivotPoint());
+         console.log("nav.getPivotSetFlag: %s", _viewer.navigation.getPivotSetFlag());
+         console.log("nav.getPosition: %O", _viewer.navigation.getPosition());
+         console.log("nav.getRequestFitToView: %s", _viewer.navigation.getRequestFitToView());
+         console.log("nav.getRequestHomeView: %s", _viewer.navigation.getRequestHomeView());
+         console.log("nav.getRequestTransition: %s", _viewer.navigation.getRequestTransition());    // returns "null" instead of boolean
+         console.log("nav.getReverseZoomDirection: %s", _viewer.navigation.getReverseZoomDirection());
+         console.log("nav.getScreenViewport: %O", _viewer.navigation.getScreenViewport());
+         console.log("nav.getTarget: %O", _viewer.navigation.getTarget());
+         console.log("nav.getTransitionActive: %s", _viewer.navigation.getTransitionActive());
+         console.log("nav.getUseLeftHandedInput: %s", _viewer.navigation.getUseLeftHandedInput());
+         console.log("nav.getUsePivotAlways: %s", _viewer.navigation.getUsePivotAlways());
+         console.log("nav.getVerticalFov: %f", _viewer.navigation.getVerticalFov());
+         console.log("nav.getWorldRightVector: %O", _viewer.navigation.getWorldRightVector());
+         console.log("nav.getWorldUpVector: %O", _viewer.navigation.getWorldUpVector());
+         console.log("nav.getZoomTowardsPivot: %s", _viewer.navigation.getZoomTowardsPivot());
+
+         console.groupEnd();
+    });
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+
+</script>

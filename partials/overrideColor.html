@@ -1,0 +1,121 @@
+
+<form class="bg-info container" action="" id="form_overrideColor">
+    <div class="form-group">
+        <h4>Override Color/Material</h4>
+        <h5>NOTE: this uses an internal API and may change in future versions.</h5>
+
+        <button id="bn_override" class="btn btn-primary">Override</button>
+        <button id="bn_overrideRestore" class="btn btn-primary">Restore</button>
+    </div>
+</form>
+
+<script>
+        // CREDIT: to Jon Smith at COINS, Inc. for this solution.  I started with
+        // his example and morphed it for this test.
+    var _overrideFragIds = [];
+    var _overlayRed = "LmvDbgRedOverlay";
+    var _overlayGreen = "LmvDbgGreenOverlay";
+    
+    initOverlays(); // set up the Overlays one time
+    
+    $("#bn_override").click(function(evt) {  
+        evt.preventDefault();
+        
+            // don't add these overlays twice
+        if (_overrideFragIds.length > 0) {
+            alert("Colos are already overridden.  Restore first.");
+            return;
+        }
+        
+            // arbitrarily divide up all objects into two sets to do this test.
+            // We will just do a simple Odd or Even on the dbID.
+        var objs1 = [];
+        var objs2 = [];
+        getObjsBasedOnSomeCondition(objs1, objs2);
+
+        overrideColorOnObj(objs1, _overlayRed);
+        overrideColorOnObj(objs2, _overlayGreen);
+    });
+    
+    $("#bn_overrideRestore").click(function(evt) {  
+        evt.preventDefault();
+                
+        for (i=0; i<_overrideFragIds.length; i++) {
+            var mesh = _viewer.impl.getRenderProxy(_viewer.impl.model, _overrideFragIds[i]);
+            if (mesh.myProxy) {
+                _viewer.impl.removeOverlay(_overlayRed, mesh.myProxy);
+                _viewer.impl.removeOverlay(_overlayGreen, mesh.myProxy);
+                delete mesh.myProxy;
+            }
+        }
+        _overrideFragIds = [];      // reset the fragIds array
+    });
+    
+        // add the two overlays to the system
+    function initOverlays() {
+           // create Color overlay for Red and assign to all even objects
+        var matRed = new THREE.MeshBasicMaterial({ color: 'red' });
+        _viewer.impl.createOverlayScene(_overlayRed, matRed, matRed);
+
+            // create Color overlay for Green and assign to all odd objects
+        var matGreen = new THREE.MeshBasicMaterial({ color: 'green' });
+        _viewer.impl.createOverlayScene(_overlayGreen, matGreen, matGreen);
+    } 
+    
+        // walk the list of objects that have geometry and get their fragments.
+    function overrideColorOnObj(objs, colorOverlayName) {
+        for (i=0; i<objs.length; i++) {
+            var tmpObj = _viewer.model.getNodeById(objs[i]);
+                // the property "fragIds" is either a single number or an array.
+                // Here we make it consistently an array so that we can loop through
+                // it easier.
+            if (!Array.isArray(tmpObj.fragIds)) {
+                var tmpFragArray = [ tmpObj.fragIds ];
+                overrideColorOnFragments(tmpFragArray, colorOverlayName);
+            }
+            else {
+                overrideColorOnFragments(tmpObj.fragIds, colorOverlayName);
+            }
+        }
+    }
+    
+        // walk the list of fragments and add the overlay to its geometry
+    function overrideColorOnFragments(fragIds, overlayName) {
+        for (j=0; j<fragIds.length; j++) {
+            var mesh = _viewer.impl.getRenderProxy(_viewer.impl.model, fragIds[j]);
+            mesh.myProxy = new THREE.Mesh(mesh.geometry, mesh.material, true);
+            mesh.myProxy.matrixWorld = mesh.matrixWorld;
+            _viewer.impl.addOverlay(overlayName, mesh.myProxy);
+
+            _overrideFragIds.push(fragIds[j]);  // keep track of the frags so that we can remove later
+        }
+    }
+    
+        // arbitrary way to split the objects into separate groups to color code
+    function getObjsBasedOnSomeCondition(objs1, objs2) {
+        _viewer.getObjectTree(function(objTree) {
+            recursiveAddChildrenToSets(objTree.children, objs1, objs2);
+        });
+    }
+    
+        // recursively walk through all the objects and divide graphical elements
+        // by whether their ID is odd or even
+    function recursiveAddChildrenToSets(children, objs1, objs2) {
+        if (!children)
+            return;
+        
+        $.each(children, function(num, obj) {
+            if (obj.fragIds) {
+                var n = obj.dbId;
+                if (n & 1)    // isEven or Odd?
+                    objs2.push(n);
+                else
+                    objs1.push(n);
+            }
+            recursiveAddChildrenToSets(obj.children, objs1, objs2);
+        });
+    };
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+
+</script>

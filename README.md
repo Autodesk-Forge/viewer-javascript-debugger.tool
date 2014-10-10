@@ -1,17 +1,7 @@
 LmvDbg Test App:
 
-Designed to test out all the API functions of the LMV Viewer.  Currently only works for a Model that is hardwired into the code.
+Designed to test out all the API functions of the LMV Viewer. You can use as a learning and diagnostic tool for the APIs and to steal source code snippets to jumpstart your own app.
 
-To use the source for yourself, you must do the following:
+The models available to use are hardwired into the code and rely on the ConsumerKey and ConsumerSecret keys for this app.  If you want to add your own models, you will have to get them translated to produce your unique URNS.  Then you will need to swap out the AuthTokenServer reference in MyAuthToken.js (currently pointing to my token service).  If you need suggestions on how to create your own AuthTokenService, there is a template service here for you to use:  https://github.com/Developer-Autodesk/AuthTokenServer_Simple.git
 
-1)  edit ./NodeAppServer/AuthCodeServer.js and add your key and secret to the location specified.
-
-2)  install Node.js (if not already present)
-
-3)  from Terminal window, run the command:  user> "node AuthCodeServer.js"
-
-4)  edit file ./scripts/MyAuthToken.js.  Make sure path to the service matches where the Node.js server in step 3 is running.
-
-5)  edit file ./index.html.  In function "initialize()", replace the URN for the document with one that is valid for your authCode.
-
-That's it!
+See the README file that is part of the live app (by clicking on the README link) for more details on how to use this app.

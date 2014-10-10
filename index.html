@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+    
+<!-- LmvDbg: This is a test app to help test the API and allow people to learn and copy snippets of
+     source.  It will continually evolve along with the API and will always be a work in progress
+     of "best parctices".  If you have any specific things you want added or have a suggestion of 
+     how to do something a better way, don't hold back... this is here to support the developer community.
+
+     Email me:  jim.awe@autodesk.com
+-->
  
 <head>
     <meta charset="utf-8">
@@ -18,19 +26,12 @@
     
         <!-- jsTree library -->
     <link rel="stylesheet" href="./scripts/libs/jstree/dist/themes/default/style.min.css" />
-    <script src="./scripts/libs/jstree/dist/jstree.js"></script>
+    <script src="./scripts/libs/jstree/dist/jstree.min.js"></script>
     
         <!-- prism syntax higlighting library -->
     <link href="./scripts/libs/prism/prism.css" rel="stylesheet" />
-    <script src="./scripts/libs/prism/prism.js"></script>
+    <script src="./scripts/libs/prism/prism.min.js"></script>
     
-        <!-- Autodesk Viewer (from server) -->
-    <!--<link rel="stylesheet" href="https://viewing.api.autodesk.com/viewingservice/v1/viewers/style.css" type="text/css">
-    <script src="https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js"></script>-->
-    
-        <!-- Autodesk Viewer (from local) -->
-    <!--<link rel="stylesheet" href="./stylesheets/libs/adsk/style.css" type="text/css">
-    <script src="./scripts/libs/adsk/viewer3D.js"></script>-->
     
     <script>
             /* This section handles conditional inclusion of the Adsk viewer CSS and JS files
@@ -41,6 +42,8 @@
             ** pass args to the URL:  https://127.0.0.1/index.html?local=1&debug=1
             ** if no args are passed, its the same as local=0, debug=0
             */
+        
+            // TBD: change this section when new Version control is in place so that we can have it run against different versions of the API.
         
             // get the arguments passed as part of the URL
         function getUrlVars() {
@@ -62,8 +65,10 @@
         }
         else {
             console.log("LmvDbg: loading online version of viewer css...");
-            loadAdskViewingCss('https://viewing.api.autodesk.com/viewingservice/v1/viewers/style.css');
+            loadAdskViewingCss('https://viewing.api.autodesk.com/viewingservice/v1/viewers/style.css');       // PROD
+            //loadAdskViewingCss('https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/style.css');   // STG
         }
+    
             
         function loadAdskViewingCss(path) {
             $('<link/>', {
@@ -87,11 +92,14 @@
         else {
             if (loadDebugViewerJs == 1) {
                 console.log("LmvDbg: loading online/debug version of viewer js...");
-                loadAdskViewingJs("https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.js");
+                loadAdskViewingJs("https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.js");      // PROD
+                //loadAdskViewingJs("https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/viewer3D.js");  // STG
             }
             else {
-                console.log("LmvDbg: loading online/minified version of viewer js...");
-                loadAdskViewingJs("https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js");
+                //console.log("LmvDbg: loading online/minified version of viewer js...");
+                console.log("LmvDbg: Loading --> https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js");
+                loadAdskViewingJs("https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js");      // PROD
+                //loadAdskViewingJs("https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js");  // STG
             }
         }
         
@@ -109,11 +117,7 @@
     <script src="./scripts/DebugUtils.js"></script>
  
     <script>
-        
-        var viewer = null;
-        var _savedGlobalCamera = null;
-        var _curSelSet = [];    // init to empty array
-        
+                
         $(document).ready(function() {
             
             $("#codeSnippetLinks").on("click", "a", function(evt) {  
@@ -130,11 +134,15 @@
                     formSection.html(data);
                     formSection.hide().fadeIn(500);
                     
-                    var sourceSection = $("code.language-markup");  // replace contents at this DOM node with source code
-                    var htmlStr = escapeHTML(data);
-                    sourceSection.html(htmlStr);
-                    Prism.highlightAll();
-                    sourceSection.hide().fadeIn(500);
+                        // if its a "partials/" page, then take the code and put it into the source code panel
+                    var prefixStr = url.substring(0, 8);
+                    if (prefixStr === "partials") {
+                        var sourceSection = $("code.language-markup");  // replace contents at this DOM node with source code
+                        var htmlStr = escapeHTML(data);
+                        sourceSection.html(htmlStr);
+                        Prism.highlightAll();
+                        sourceSection.hide().fadeIn(500);
+                    }
                 });
                 
             });
@@ -149,56 +157,31 @@
                     .replace(/>/g, '&gt;');
         }
         
-        function initialize() {
-            var authToken = new MyAuthToken();
-			
-			var options = {};
-			options.env = 'AutodeskProduction';
-			options.accessToken = authToken.get();
-			
-			//var documentId = 'urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6Y29pbnNfZGFsbGFzX3Rlc3QvR3JhbmRWaWV3SG9zcGl0YWwubndk'; // COINS
-            //var documentId = "urn:dXJuOmFkc2subml0cm9nZW46ZnMuZmlsZTo1MTA0YjA0MjRkZjE0NWI5YjExZGMyNzEyZWZlN2I3MQ==";  // Navis plant
-            //var documentId = "urn:dXJuOmFkc2subml0cm9nZW46ZnMuZmlsZTpmZjUyN2Q1YjM3NzI0NjA4YTdjNzUwYmRjYWExMTFkNA==";  // Revit Church
-            //var documentId = "urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L0FDMTEtSW5zdGl0dXRlLVZhci0yLUlGQy5pZmM="; // IFC MOdel"
-            var documentId = "urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L3ZpZXd0ZXN0MS5ydnQ=";  // ViewTest1        
-
-			var viewerElement = document.getElementById('viewer');
-            viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerElement, {});
-
-			Autodesk.Viewing.Initializer(options, function() {
-                viewer.initialize();
-				loadDocument(viewer, Autodesk.Viewing.Private.getAuthObject(), documentId);
-			});
-            
-            viewer.addEventListener('selection', function (event) {
-                _curSelSet = event.dbIdArray;
-                console.log("LmvDbg: [Selection Set]: ", _curSelSet);
-            });
-        }
-
-        function loadDocument(viewer, auth, documentId) {
-			Autodesk.Viewing.Document.load(documentId, function(document) {
-				var geometryItems = [];
-				geometryItems = Autodesk.Viewing.Document.getSubItemsWithProperties(document.getRootItem(),
-                                    {'type':'geometry', 'role':'3d'},
-                                    true);
-				
-				if (geometryItems.length > 0) {
-                       viewer.load(document.getViewablePath(geometryItems[0]));
-				}
-                
-			}, function(errorCode, errorMsg) {
-				alert('Load Error: ' + errorMsg);
-			});
-        } 
+       
     </script>
 </head>
  
-<body onload="initialize();" oncontextmenu="return false;">  <!-- NOTE: setting oncontextmenu=false allows the viewer context menu to work (for things like "Hide Selected") -->
+<body onload="loadInitialModel();" style="margin:0" oncontextmenu="return false;">  <!-- NOTE: setting oncontextmenu=false allows the viewer context menu to work (for things like "Hide Selected") -->
     <div class="container">
-        <div class="form-buffer">
+        <div class="row form-buffer">
             <img id="img_logo" src="./images/logo_header.png" alt="Autodesk, Inc.">
-            <h1>LmvDbg - Test App</h1>
+        </div>
+        <div class="row form-buffer">
+            <div class="col-md-4">
+                <h1>LmvDbg</h1>
+            </div>
+            <div class="col-md-4">
+                <label for="pu_modelToLoad">Model</label>
+                <select id="pu_modelToLoad" class="form-control" name="modelToLoad">
+                    <!-- Options filled in by function in LoadModel.js -->
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="pu_viewToLoad">View</label>
+                <select id="pu_viewToLoad" class="form-control" name="viewToLoad">
+                    <!-- Options filled in by function in LoadModel.js -->
+                </select>
+            </div>
         </div>
     </div>
             
@@ -222,18 +205,16 @@
                     <li><a href="partials/clearSelection.html">clearSelection()</a></li>
                     <li><a href="partials/setFocalLength.html">setFocalLength()</a></li>
                     <li><a href="partials/setFOV.html">setFOV()</a></li>
+                    <li><a href="partials/search.html">search()</a></li>
                     <li><a href="partials/explode.html">explode()</a></li>
-                    <li><a href="partials/getObjTree.html">getObjectTree()</a>
-                        <ul>
-                            <li>select()</li>
-                            <li>isolate()</li>
-                            <li>hide()</li>
-                            <li>show()</li>
-                            <li>fitToView()</li>
-                            <li>properties()</li>
-                        </ul>
-                    </li>
-                    <li><a href="partials/curSelectionSet.html">** selection set **</a></li>
+                    <li><a href="partials/getObjTree.html">getObjectTree()</a></li>
+                    <br/>
+                    <li><a href="partials/curSelectionSet.html">** Selection set **</a></li>
+                    <li><a href="partials/dumpNavSettings.html">** Navigation settings **</a></li>
+                    <li><a href="partials/dumpDocumentSettings.html">** Document settings **</a></li>
+                    <li><a href="partials/overrideColor.html">** Override color **</a></li>
+                    <br/>
+                    <li><a href="https://docs.google.com/document/d/1p-rNfsNfi1-5BnCKrQr6RPtgXqGfVYLrqkOxRO0e3FE/pub">README</a></li>
                 </ul>
             </div>
         </div>
@@ -258,6 +239,8 @@
 
     </div>
     
+    <script src="./scripts/LoadModel.js"></script>
+
 </body>
  
 </html>

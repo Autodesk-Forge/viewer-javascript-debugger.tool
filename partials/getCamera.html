@@ -14,7 +14,7 @@
      $("#bn_getCamera").click(function(evt) {  
          evt.preventDefault();
                  
-         var tmpCam = viewer.getCamera();
+         var tmpCam = _viewer.navigation.getCamera();
          _savedGlobalCamera = tmpCam.clone();
          _savedGlobalCamera.target = tmpCam.target.clone();  // HACK:  have to clone target manually!
                  
@@ -30,7 +30,7 @@
         if (_savedGlobalCamera == null)
             alert("No global camera saved yet.  Use getCamera() first!");
         else
-            viewer.applyCamera(_savedGlobalCamera);
+            _viewer.navigation.applyCamera(_savedGlobalCamera);
     });
     
     console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");

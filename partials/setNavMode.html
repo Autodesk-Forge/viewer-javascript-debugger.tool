@@ -25,7 +25,7 @@
     $("#bn_getNavigationMode").click(function(evt) {  
         evt.preventDefault();
 
-        var curNavMode = viewer.getNavigationMode();
+        var curNavMode = _viewer.getNavigationMode();
         var navStr;
         if (curNavMode === 0)
             navStr = "0 - Orbit";
@@ -50,7 +50,7 @@
 
         var mode = parseInt($("#pu_setNavigationMode option:selected").val(), 10);
         console.log("Setting Navigation Mode = " + mode);
-        viewer.setNavigationMode(mode);
+        _viewer.setNavigationMode(mode);
     });
     
     console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
