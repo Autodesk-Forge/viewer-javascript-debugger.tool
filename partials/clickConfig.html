@@ -1,0 +1,57 @@
+
+<form class="bg-info container" action="" id="form_clickConfig">
+    <div class="form-group">
+        <h4>Viewer3d.getClickConfig(what, where) -> {Array}</h4>
+        <h5>Fetch a click action configuration entry.</h5>
+        <button id="bn_getClickConfig" class="btn btn-primary">Get Click Config</button>
+    </div>
+</form>
+
+<script>
+    $("#bn_getClickConfig").click(function(evt) {  
+        evt.preventDefault();
+        
+        alert("Check Chrome debugger console for dump of click configs");
+        console.group("LmvDbg: Click Configs =");
+        
+            // click
+        var arr1 = _viewer.getClickConfig("click", "onObject");
+        console.log("config (click, onObject): %O", arr1);
+        
+        var arr2 = _viewer.getClickConfig("click", "offObject");
+        console.log("config (click, offObject): %O", arr2);
+        
+            // clickAlt
+        arr1 = _viewer.getClickConfig("clickAlt", "onObject");
+        console.log("config (clickAlt, onObject): %O", arr1);
+        
+        arr2 = _viewer.getClickConfig("clickAlt", "offObject");
+        console.log("config (clickAlt, offObject): %O", arr2);
+        
+            // clickCtrl
+        arr1 = _viewer.getClickConfig("clickCtrl", "onObject");
+        console.log("config (clickCtrl, onObject): %O", arr1);
+        
+        arr2 = _viewer.getClickConfig("clickCtrl", "offObject");
+        console.log("config (clickCtrl, offObject): %O", arr2);
+        
+            // clickShift
+        arr1 = _viewer.getClickConfig("clickShift", "onObject");
+        console.log("config (clickShift, onObject): %O", arr1);
+        
+        arr2 = _viewer.getClickConfig("clickShift", "offObject");
+        console.log("config (clickShift, offObject): %O", arr2);
+        
+           // clickCtrlShift
+        arr1 = _viewer.getClickConfig("clickCtrlShift", "onObject");
+        console.log("config (clickCtrlShift, onObject): %O", arr1);
+        
+        arr2 = _viewer.getClickConfig("clickCtrlShift", "offObject");
+        console.log("config (clickCtrlShift, offObject): %O", arr2);
+         
+        console.groupEnd();
+    });
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+
+</script>

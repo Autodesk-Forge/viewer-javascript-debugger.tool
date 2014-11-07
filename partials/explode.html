@@ -1,18 +1,27 @@
 
-<form class="bg-info container" action="" id="form_setFocalLength">
+<form class="bg-info container" action="" id="form_explode">
     <div class="form-group">
-        <h4>BaseViewer3d.explode(scale);</h4>
+        <h4>Viewer3d.getExplodeScale();</h4>
+        <h5>Returns the explode scale</h5>
+        <button id="bn_getExplodeScale" class="btn btn-primary">Get Explode Scale</button>
+        
+        <h4>Viewer3d.explode(scale);</h4>
         <h5>Explodes the model from the center of gravity.</h5>
-        <label for="sldr_explode">Explode {0.0 - 100.0}</label>
+        <label for="sldr_explode">Explode {0.0 - 1.0}</label>
         <div class="input-group">
-            <input class="form-control" name="explode" id="sldr_explode" type="range" step=".01" min="0.0" max="100.0" value="0">
+            <input class="form-control" name="explode" id="sldr_explode" type="range" step=".01" min="0.0" max="1.0" value="0">
             <span class="input-group-addon" id="txt_explode">0.0</span>
         </div>
     </div>
 </form>
 
 <script>
-        // TBD: no way to get current explode value
+    $("#bn_getExplodeScale").click(function(evt) {  
+        evt.preventDefault();
+                 
+        var curScale = _viewer.getExplodeScale();
+        alert("Current Explode Scale: " + curScale);
+    });
     
     $("#sldr_explode").on("input", function(evt) {  
         evt.preventDefault();
@@ -27,9 +36,9 @@
     });
     
         // get the current value of Explode and set the sliders current value accordingly
-    //var curExplode = viewer.getExplode();
-    //$("#sldr_explode").val(curExplode);
-    //$("#txt_explode").html(curExplode);
+    var curExplode = _viewer.getExplodeScale();
+    $("#sldr_explode").val(curExplode);
+    $("#txt_explode").html(curExplode);
     
     console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
 

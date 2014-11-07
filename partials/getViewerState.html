@@ -1,0 +1,65 @@
+
+<form class="bg-info container" action="" id="form_getViewerState">
+    <div class="form-group">
+        <h4>Viewer3d.getState();</h4>
+        <h5>Gets the current state of the viewer so it can be restored later.</h5>
+        <button id="bn_getState" class="btn btn-primary">Get Viewer State</button>
+        
+        <h4>Viewer3d.restoreState(viewerState, filteropt, immediateopt) → {boolean}</h4>
+        <h5>Restore a given viewer state.</h5>
+        <label for="pu_viewToRestore">Restore Saved State</label>
+        <select id="pu_viewToRestore" class="form-control" name="savedState">
+            <!-- Options filled in by function loadSavedViewMenuOptions() -->
+        </select>
+    </div>
+</form>
+
+<script>
+    $("#bn_getState").click(function(evt) {  
+        evt.preventDefault();
+                 
+        var tmpState = _viewer.getState();
+        if (tmpState) {
+             _savedViewerStates.push(tmpState);
+  
+             alert("Check Chrome debugger console for dump of State object");
+             console.group("LmvDbg: Current Viewer States =");
+             console.debug(_savedViewerStates);
+             console.groupEnd();
+             
+             loadSavedViewMenuOptions();
+         }   
+    });
+    
+    $("#pu_viewToRestore").change(function(evt) {  
+        evt.preventDefault();
+                
+        if (_savedViewerStates.length == 0) {
+            alert("No saved states yet.  Use getState() first!");
+        }
+        else {
+            var index = parseInt($("#pu_viewToRestore option:selected").val(), 10);
+            _viewer.restoreState(_savedViewerStates[index]);
+        }
+    });
+    
+            // populate the popup menu with the avaialable saved views
+    function loadSavedViewMenuOptions() {
+        var sel = $("#pu_viewToRestore");
+
+        sel.find("option").remove().end();  // remove all existing options
+
+            // add the 3D options
+        $.each(_savedViewerStates, function(i, item) {
+            sel.append($("<option>", { 
+                value: i,
+                text : "State: " + i, 
+            }));
+        });
+    }
+    
+    loadSavedViewMenuOptions(); // load whatever has been saved during this session when this page loads
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+
+</script>

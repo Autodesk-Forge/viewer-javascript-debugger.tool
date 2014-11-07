@@ -15,6 +15,7 @@ var _savedGlobalCamera = null;
 var _loadedDocument = null;
 var _views2D = null;
 var _views3D = null;
+var _savedViewerStates = [];
 
     // setup for STAGING
 /*var _viewerEnv = "AutodeskStaging";
@@ -34,14 +35,19 @@ var _viewerEnv = "AutodeskProduction";
 var _myAuthToken = new MyAuthToken("PROD");
 
 var _lmvModelOptions = [
-    { label : "Urban House (Revit)",        urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9VcmJhbiUyMEhvdXNlJTIwLSUyMDIwMTUucnZ0"},
-    { label : "rme-basic-sample (Revit)",   urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9ybWVfYmFzaWNfc2FtcGxlX3Byb2plY3QucnZ0"},
-    { label : "Audobon Structure (Revit)",  urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9BdWRvYm9uJTIwLSUyMFN0cnVjdHVyZS5ydnQ="},
-    { label : "ViewTest1 (Revit)",          urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9WaWV3VGVzdDEucnZ0"},
+    { label : "Urban House (Revit)",        urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bG12ZGJnX3Byb2QvVXJiYW4lMjBIb3VzZSUyMC0lMjAyMDE1LnJ2dA=="},
+    { label : "rme-basic-sample (Revit)",   urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bG12ZGJnX3Byb2Qvcm1lX2Jhc2ljX3NhbXBsZV9wcm9qZWN0LnJ2dA=="},
+    { label : "Audobon Structure (Revit)",  urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bG12ZGJnX3Byb2QvQXVkb2JvbiUyMC0lMjBTdHJ1Y3R1cmUucnZ0"},
     { label : "Factory (Navisworks)",       urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9Db21wbGV0ZWQlMjBQbGFudCUyMExheW91dCUyMGNvbnN0cnVjdGlvbi5ud2Q="},
     { label : "Gatehouse (Navisworks)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9nYXRlaG91c2UyLm53ZA=="},
     { label : "Lego Man (Fusion)",          urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9sZWdvX2d1eTIwMTQwMTMxMDkxOTU4LmYzZA=="},
-    { label : "Utility Knife (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9VdGlsaXR5X0tuaWZlMjAxNDAxMjkxNDAwNDEuZjNk"}
+    { label : "Utility Knife (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9VdGlsaXR5X0tuaWZlMjAxNDAxMjkxNDAwNDEuZjNk"},
+    { label : "Fender Guitar (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9GZW5kZXJfU3RyYXRfTlguc3RwLmM5ZTZhODg0LWU0NWItNGQ3ZC1iNjcyLTY2NjM1OTVhYTRkOTIwMTQwMjIwMTA0OTA3LmYzZA=="},
+    { label : "Whiskey Drinks (DWG)",       urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bG12ZGJnX3Byb2Qvd2hpc2tleS1kcmlua3MuZHdn"}
+    
+    //{ label : "View Test (OLD VERSION)",    urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L1ZpZXdUZXN0Mi5ydnQ"},
+    //{ label : "Lego Guy (OLD VERSION)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L2xlZ29fZ3V5MjAxNDAxMzEwOTE5NThfY29weS5mM2Q="},
+    //{ label : "Fender Guitar (OLD VERSION)",    urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L0ZlbmRlcl9TdHJhdF9OWC5zdHAuYzllNmE4ODQtZTQ1Yi00ZDdkLWI2NzItNjY2MzU5NWFhNGQ5MjAxNDAyMjAxMDQ5MDcuZjNk"}
 ];
 
     // when we switch models, we want to reset the UI for the Try It form or it might have left over
@@ -139,6 +145,7 @@ function initializeViewer() {
         _viewer = null;
         _curSelSet = [];
         _savedGlobalCamera = null;
+        _savedViewerStates = [];
     }
 
     var viewerElement = document.getElementById("viewer");  // placeholder in HTML to stick the viewer
@@ -259,8 +266,8 @@ function loadViewErrorFunc()
 function loadView(viewObj) {
     var path = _loadedDocument.getViewablePath(viewObj);
     console.log("Loading view URN: " + path);
-    //_viewer.load(path, _loadedDocument.getPropertyDbPath(), loadViewSuccessFunc, loadViewErrorFunc);
-    _viewer.load(path);
+    _viewer.load(path, _loadedDocument.getPropertyDbPath(), loadViewSuccessFunc, loadViewErrorFunc);
+    //_viewer.load(path);
 }
 
     // wrap this in a simple function so we can pass it into the Initializer options object

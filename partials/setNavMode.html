@@ -1,20 +1,26 @@
 
 <form class="bg-info container" action="" id="form_setNavMode">
     <div class="form-group">
-        <h4>BaseViewer3d.getNavigationMode(); --> {NAVIGATION_MODE}</h4>
-        <h5>Gets the current default navigation mode for the left mouse button / single finger drag.</h5>
-        <button id="bn_getNavigationMode" class="btn btn-primary">Get Navigation Mode</button>
-        <h4>BaseViewer3d.setNavigationMode(mode);</h4>
+        
+        <h4>Viewer3d.getActiveNavigationTool(); --> {string}</h4>
+        <h5>Returns the name of the active navigation tool.</h5>
+        <button id="bn_getActiveNavigationTool" class="btn btn-primary">Get Active Navigation Tool</button>
+        
+        <h4>Viewer3d.getDefaultNavigationToolName(); --> {string}</h4>
+        <h5>Returns the default navigation tool.</h5>
+        <button id="bn_getDefaultNavigationToolName" class="btn btn-primary">Get Default Navigation Tool</button>
+        
+        <h4>Viewer3d.setActiveNavigationTool(toolName);</h4>
         <div class="row">
             <div class="col-md-4">
                 <label for="pu_setNavigationMode">Navigation Mode</label>
                 <select id="pu_setNavigationMode" class="form-control" name="navigationMode">
-                    <option value="0">Orbit</option>
-                    <option value="1">Pan</option>
-                    <option value="2">Dolly</option>
-                    <option value="3">Roll</option>
-                    <option value="4">FOV</option>
-                    <option value="5">Other</option>
+                    <option value="0">orbit</option>
+                    <option value="1">pan</option>
+                    <option value="2">dolly</option>
+                    <option value="3">worldup</option>
+                    <option value="4">fov</option>
+                    <option value="5">** bad value **</option>
                 </select>
             </div>
         </div>
@@ -22,35 +28,28 @@
 </form>
 
 <script>
-    $("#bn_getNavigationMode").click(function(evt) {  
+    $("#bn_getActiveNavigationTool").click(function(evt) {  
         evt.preventDefault();
 
-        var curNavMode = _viewer.getNavigationMode();
-        var navStr;
-        if (curNavMode === 0)
-            navStr = "0 - Orbit";
-        else if (curNavMode === 1)
-            navStr = "1 - Pan";
-        else if (curNavMode === 2)
-            navStr = "2 - Dolly";
-        else if (curNavMode === 3)
-            navStr = "3 - Roll";
-        else if (curNavMode === 4)
-            navStr = "4 - FOV";
-        else if (curNavMode === 5)
-            navStr = "5 - Other";
-        else
-            navStr = "ERROR - Unexpected Value";
+        var activeToolStr = _viewer.getActiveNavigationTool();
+        alert("Active Navigation Tool: " + activeToolStr);
+    });
+    
+    $("#bn_getDefaultNavigationToolName").click(function(evt) {  
+        evt.preventDefault();
 
-        alert("Current Navigation Mode: " + navStr);
+        var defaultToolStr = _viewer.getDefaultNavigationToolName();
+        alert("Default Navigation Tool Name: " + defaultToolStr);
     });
 
     $("#pu_setNavigationMode").change(function(evt) {  
         evt.preventDefault();
 
-        var mode = parseInt($("#pu_setNavigationMode option:selected").val(), 10);
-        console.log("Setting Navigation Mode = " + mode);
-        _viewer.setNavigationMode(mode);
+        var toolName = $("#pu_setNavigationMode option:selected").text();
+        console.log("Setting Active Navigation Tool = " + toolName);
+        if (_viewer.setActiveNavigationTool(toolName) == false) {
+            alert("Could not set the specified Navigation Tool!");
+        }
     });
     
     console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");

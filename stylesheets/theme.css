@@ -14,7 +14,13 @@ textarea {
 }
 
 #viewer {
-    height: 500px;
+    height: 500px;  /* set height of div for viewer to go into (if I don't do this then Bootstrap seems to squish it to 0 */
+}
+
+    /* put a border around the viewer window */
+.adsk-viewing-viewer {
+    border-style: solid;
+    border-width: 1px;
 }
 
 .voffset  { margin-top: 2px; }
