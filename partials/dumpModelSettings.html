@@ -1,0 +1,40 @@
+
+<form class="bg-info container" action="" id="form_dumpModelSettings">
+    <div class="form-group">
+        <h4>Model object settings</h4>
+        <h5>Dumps values of the Model object into Chrome debugger</h5>
+        <button id="bn_dumpModelSettings" class="btn btn-primary">Get Model Settings</button>
+    </div>
+</form>
+
+<script>
+     $("#bn_dumpModelSettings").click(function(evt) {  
+         evt.preventDefault();
+                 
+         alert("Check Chrome debugger console for dump of Viewer.model object");
+         console.group("LmvDbg: Model object settings =");
+         
+         console.log("Model: %O", _viewer.model);
+         var model = _viewer.model;
+         
+         console.log("model.geomPolyCount: %f", model.geomPolyCount());
+         console.log("model.getBoundingBox: %O", model.getBoundingBox());
+         console.log("model.getData : %O", model.getData());
+         console.log("model.getDefaultCamera: %O", model.getDefaultCamera());
+         console.log("model.getLayersRoot: %O", model.getLayersRoot());
+         console.log("model.getRoot: %O", model.getRoot ());
+         console.log("model.getRootId : %f", model.getRootId());
+         console.log("model.getUnitScale: %f", model.getUnitScale());
+         console.log("model.getUnitString: %s", model.getUnitString());
+         console.log("model.getUpVector: %O", model.getUpVector());
+         console.log("model.instancePolyCount: %f", model.instancePolyCount());
+         console.log("model.is2d: %s", model.is2d());
+         console.log("model.isLoadDone: %s", model.isLoadDone());
+         console.log("model.isObjectTreeCreated: %s", model.isObjectTreeCreated());
+         
+         console.groupEnd();
+    });
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+
+</script>

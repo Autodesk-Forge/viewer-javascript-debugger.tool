@@ -32,83 +32,13 @@
     <link href="./scripts/libs/prism/prism.css" rel="stylesheet" />
     <script src="./scripts/libs/prism/prism.min.js"></script>
     
-    
-    <script>
-            /* This section handles conditional inclusion of the Adsk viewer CSS and JS files
-            ** based on whether you want them to come from the local (cached) directory, or the live
-            ** online (current) version.  You can also choose to whether you want the debug version
-            ** of the JS file or the minified version.
-            **
-            ** pass args to the URL:  https://127.0.0.1/index.html?local=1&debug=1
-            ** if no args are passed, its the same as local=0, debug=0
-            */
-        
-            // TBD: change this section when new Version control is in place so that we can have it run against different versions of the API.
-        
-            // get the arguments passed as part of the URL
-        function getUrlVars() {
-            var vars = {};
-            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
-                vars[key] = value;
-            });
-            return vars;
-        }
-        
-            // see what values were specified (if none, they will be undefined and default to local=0, debug=0)
-        var loadDebugViewerJs = getUrlVars()["debug"];
-        var loadLocalJs = getUrlVars()["local"];
+        <!-- Autodesk Viewer (from server: PROD) -->
+    <!--<link rel="stylesheet" href="https://viewing.api.autodesk.com/viewingservice/v1/viewers/style.css" type="text/css">
+    <script src="https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js"></script>-->
 
-            // load the specified CSS file
-        if (loadLocalJs == 1) {
-            console.log("LmvDbg: loading local version of viewer css...");
-            loadAdskViewingCss('./stylesheets/libs/adsk/style.css');
-        }
-        else {
-            console.log("LmvDbg: loading online version of viewer css...");
-            loadAdskViewingCss('https://viewing.api.autodesk.com/viewingservice/v1/viewers/style.css');       // PROD
-            //loadAdskViewingCss('https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/style.css');   // STG
-        }
-    
-            
-        function loadAdskViewingCss(path) {
-            $('<link/>', {
-                rel: 'stylesheet',
-               type: 'text/css',
-               href: path
-            }).appendTo('head');
-        }
-        
-            // load the specified JS file
-        if (loadLocalJs == 1) {
-            if (loadDebugViewerJs == 1) {
-                console.log("LmvDbg: loading local/debug version of viewer js...");
-                loadAdskViewingJs("./scripts/libs/adsk/viewer3D.js");
-            }
-            else {
-                console.log("LmvDbg: loading local/minified version of viewer js...");
-                loadAdskViewingJs("./scripts/libs/adsk/viewer3D.min.js");
-            }
-        }
-        else {
-            if (loadDebugViewerJs == 1) {
-                console.log("LmvDbg: loading online/debug version of viewer js...");
-                loadAdskViewingJs("https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.js");      // PROD
-                //loadAdskViewingJs("https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/viewer3D.js");  // STG
-            }
-            else {
-                console.log("LmvDbg: loading online/minified version of viewer js...");
-                loadAdskViewingJs("https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js");      // PROD
-                //loadAdskViewingJs("https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js");  // STG
-            }
-        }
-        
-        function loadAdskViewingJs(path) {
-            $.ajaxSetup({async:false});
-            $.getScript(path);
-            $.ajaxSetup({async:true});
-        }
-    
-    </script>
+        <!-- Autodesk Viewer (from server: STAGING) -->
+    <link rel="stylesheet" href="https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/style.css?v=0.1.220" type="text/css">
+    <script src="https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js?v=0.1.220"></script>
         
         <!-- This apps includes -->
     <link href="./stylesheets/theme.css" rel="stylesheet">
@@ -212,7 +142,10 @@
                     <li><a href="partials/curSelectionSet.html">** Selection set **</a></li>
                     <li><a href="partials/dumpNavSettings.html">** Navigation settings **</a></li>
                     <li><a href="partials/dumpDocumentSettings.html">** Document settings **</a></li>
+                    <li><a href="partials/dumpModelSettings.html">** Model settings **</a></li>
+                    <li><a href="partials/dumpViewerSettings.html">** Viewer settings **</a></li>
                     <li><a href="partials/overrideColor.html">** Override color **</a></li>
+                    <li><a href="partials/toolbars.html">** Toolbars **</a></li>
                     <br/>
                     <li><a href="https://docs.google.com/document/d/1p-rNfsNfi1-5BnCKrQr6RPtgXqGfVYLrqkOxRO0e3FE/pub">README</a></li>
                 </ul>
@@ -223,7 +156,7 @@
     <br/>
 
     <div class="container">
-        <div class="lmvDbg_swap">
+        <div class="lmvDbg_swap" id="html_swap">
             <!-- form for a specific function will go here -->
         </div>
     </div>

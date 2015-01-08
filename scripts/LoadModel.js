@@ -18,20 +18,22 @@ var _views3D = null;
 var _savedViewerStates = [];
 
     // setup for STAGING
-/*var _viewerEnv = "AutodeskStaging";
+var _viewerEnv = "AutodeskStaging";
 var _myAuthToken = new MyAuthToken("STG");
 
 var _lmvModelOptions = [
     { label : "Urban House (Revit)",        urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9VcmJhbiUyMEhvdXNlJTIwLSUyMDIwMTUucnZ0"},
+    { label : "Urban House (Revit - 11-18)",        urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bG12ZGJnX3N0Zy9VcmJhbiUyMEhvdXNlJTIwLSUyMDIwMTUucnZ0"},
+    
     { label : "rme-basic-sample (Revit)",   urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9ybWVfYmFzaWNfc2FtcGxlX3Byb2plY3QucnZ0"},
     { label : "ViewTest1 (Revit)",          urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9WaWV3VGVzdDEucnZ0"},
     { label : "Factory (Navisworks)",       urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9Db21wbGV0ZWQlMjBQbGFudCUyMExheW91dCUyMGNvbnN0cnVjdGlvbi5ud2Q="},
     { label : "Lego Guy (Fusion)",          urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9sZWdvX2d1eTIwMTQwMTMxMDkxOTU4LmYzZA=="},
     { label : "Utility Knife (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9VdGlsaXR5X0tuaWZlMjAxNDAxMjkxNDAwNDEuZjNk"}
-];*/
+];
 
     // setup for PRODUCTION
-var _viewerEnv = "AutodeskProduction";
+/*var _viewerEnv = "AutodeskProduction";
 var _myAuthToken = new MyAuthToken("PROD");
 
 var _lmvModelOptions = [
@@ -48,7 +50,7 @@ var _lmvModelOptions = [
     //{ label : "View Test (OLD VERSION)",    urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L1ZpZXdUZXN0Mi5ydnQ"},
     //{ label : "Lego Guy (OLD VERSION)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L2xlZ29fZ3V5MjAxNDAxMzEwOTE5NThfY29weS5mM2Q="},
     //{ label : "Fender Guitar (OLD VERSION)",    urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L0ZlbmRlcl9TdHJhdF9OWC5zdHAuYzllNmE4ODQtZTQ1Yi00ZDdkLWI2NzItNjY2MzU5NWFhNGQ5MjAxNDAyMjAxMDQ5MDcuZjNk"}
-];
+];*/
 
     // when we switch models, we want to reset the UI for the Try It form or it might have left over
     // data about selection sets and stuff that isn't valid anymore.
@@ -116,15 +118,32 @@ function loadViewMenuOptions() {
     if (index >= 1000) {    // 2D views we gave a higher index to in the Popup menu
         index -= 1000;
         console.log("Changing to 2D view: " + _views2D[index].name);
-        initializeViewer();
+        //initializeViewer();
+        switchSheet();
         loadView(_views2D[index]);
     }
     else {
         console.log("Changing to 3D view: " + _views3D[index].name);
-        initializeViewer();
+        //initializeViewer();
+        switchSheet();
         loadView(_views3D[index]);
     }
 });
+
+    // As of build 0.1.204, you can switch sheets more directly instead of completely
+    // initializing a new viewer.  But, we stil want to reset our global vars that keep
+    // track of things like our current selection set.
+function switchSheet() {
+    
+    if (_viewer !== null) {
+        _viewer.tearDown();     // delete everything associated with the current loaded asset
+        _curSelSet = [];
+        _savedGlobalCamera = null;
+        _savedViewerStates = [];
+    }
+
+    _viewer.setUp();    // set it up again for a new asset to be loaded
+}
 
 // STEPS:
 //  0)  Initialize the Viewing Runtime
@@ -139,7 +158,6 @@ function loadViewMenuOptions() {
     // initialize the viewer into the HTML placeholder
 function initializeViewer() {
     
-        // if we already have something loaded, uninitialize and re-init (can't just load a new file!:  ?? is that a bug?)
     if (_viewer !== null) {
         _viewer.uninitialize();
         _viewer = null;
@@ -171,7 +189,8 @@ function initializeViewer() {
             // if a single item, help debug by dumping it to the console window.
         if (_curSelSet.length == 1) {
             var tmpObj = _viewer.model.getNodeById(_curSelSet[0]);
-            console.debug(tmpObj);
+            if (tmpObj)     // NOTE: 2D still returns Null for this because its not implemented
+                console.debug(tmpObj);
         }
     });
     
@@ -189,30 +208,6 @@ function initializeViewer() {
     //Autodesk.Viewing.RENDER_OPTION_CHANGED_EVENT = 'renderOptionChanged';
 }
 
-    // TBD:  I'd like to be able to write this as this function, where I only have to initialize it once and then
-    // load in mulitple documents.  That currently does not work.  Bug or as designed?
-/*function initializeViewer2() {
-    
-    if (_viewer === null) {
-
-        var viewerElement = document.getElementById("viewer");
-
-        _viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerElement, {});
-
-        var retCode = _viewer.initialize();
-        if (retCode !== 0) {
-            alert("ERROR: Couldn't initialize viewer!");
-            console.log("ERROR Code: " + retCode);      // TBD: do real error handling here
-        }
-        _viewer.addEventListener("selection", function (event) {
-            _curSelSet = event.dbIdArray;
-            console.log("LmvDbg: [Selection Set]: ", _curSelSet);
-        });
-    }
-    else {
-        console.log("Viewer already intialized...");
-    }
-}*/
 
     // load a specific document into the intialized viewer
 function loadDocument(urnStr) {

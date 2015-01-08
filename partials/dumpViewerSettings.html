@@ -1,0 +1,62 @@
+
+<form class="bg-info container" action="" id="form_dumpViewerSettings">
+    <div class="form-group">
+        <h4>Viewer object settings</h4>
+        <h5>Dumps values of the Viewer object into Chrome debugger</h5>
+        <button id="bn_dumpViewerSettings" class="btn btn-primary">Get Viewer Settings</button>
+    </div>
+</form>
+
+<script>
+     $("#bn_dumpViewerSettings").click(function(evt) {  
+         evt.preventDefault();
+                 
+         alert("Check Chrome debugger console for dump of Viewer object");
+         console.group("LmvDbg: Viewer object settings =");
+         
+         console.log("Viewer: %O", _viewer);
+         
+         console.log("viewer.anyLayerHidden: %s", _viewer.anyLayerHidden());
+         console.log("viewer.areAllVisible: %s", _viewer.areAllVisible());
+         console.log("viewer.canChangeScreenMode: %s", _viewer.canChangeScreenMode());
+         console.log("viewer.detectWebGL: %f", _viewer.detectWebGL());
+         console.log("viewer.escapeScreenMode: %s", _viewer.escapeScreenMode());
+         console.log("viewer.getActiveNavigationTool: %s", _viewer.getActiveNavigationTool());
+         console.log("viewer.getCamera: %O", _viewer.getCamera());
+         console.log("viewer.getDefaultNavigationToolName: %s", _viewer.getDefaultNavigationToolName());
+         console.log("viewer.getDimensions: %O", _viewer.getDimensions());
+         console.log("viewer.getExplodeScale: %f", _viewer.getExplodeScale());
+         console.log("viewer.getFocalLength: %f", _viewer.getFocalLength());
+         console.log("viewer.getHiddenNodes: %O", _viewer.getHiddenNodes());
+         console.log("viewer.getIsolatedNodes: %O", _viewer.getIsolatedNodes());
+         console.log("viewer.getLayerStates: %O", _viewer.getLayerStates());
+         console.log("viewer.getSelection: %O", _viewer.getSelection());
+         console.log("viewer.getSelectionCount: %f", _viewer.getSelectionCount());
+         console.log("viewer.getSelectionVisibility: %O", _viewer.getSelectionVisibility());
+         console.log("viewer.getToolbar: %O", _viewer.getToolbar());
+         
+         var screenMode = _viewer.getScreenMode();
+         var screenModeStr;
+         if (screenMode == Autodesk.Viewing.Viewer.ScreenMode.kNormal)
+             screenModeStr = "kNormal";
+         else if (screenMode == Autodesk.Viewing.Viewer.ScreenMode.kFullBrowser)
+             screenModeStr = "kFullBrowser";
+         else if (screenMode == Autodesk.Viewing.Viewer.ScreenMode.kFullScreen)
+             screenModeStr = "kFullScreen";
+         else
+             screenModeStr = "*UNKNOWN*";
+         
+         console.log("viewer.getScreenMode: %s", screenModeStr);
+         console.log("viewer.getScreenModeDelegate: %O", _viewer.getScreenModeDelegate());
+         console.log("viewer.getState: %O", _viewer.getState());
+         console.log("viewer.isScreenModeSupported(kNormal): %s", _viewer.isScreenModeSupported(Autodesk.Viewing.Viewer.ScreenMode.kNormal));
+         console.log("viewer.isScreenModeSupported(kFullBrowser): %s", _viewer.isScreenModeSupported(Autodesk.Viewing.Viewer.ScreenMode.kFullBrowser));
+         console.log("viewer.isScreenModeSupported(kFullScreen): %s", _viewer.isScreenModeSupported(Autodesk.Viewing.Viewer.ScreenMode.kFullScreen));
+         //console.log("viewer.nextScreenMode: %s", _viewer.nextScreenMode());      // causes it to actually change to the next screen mode
+         
+         console.groupEnd();
+    });
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+
+</script>
