@@ -18,7 +18,7 @@ var _views3D = null;
 var _savedViewerStates = [];
 
     // setup for STAGING
-var _viewerEnv = "AutodeskStaging";
+/*var _viewerEnv = "AutodeskStaging";
 var _myAuthToken = new MyAuthToken("STG");
 
 var _lmvModelOptions = [
@@ -30,10 +30,10 @@ var _lmvModelOptions = [
     { label : "Factory (Navisworks)",       urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9Db21wbGV0ZWQlMjBQbGFudCUyMExheW91dCUyMGNvbnN0cnVjdGlvbi5ud2Q="},
     { label : "Lego Guy (Fusion)",          urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9sZWdvX2d1eTIwMTQwMTMxMDkxOTU4LmYzZA=="},
     { label : "Utility Knife (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9VdGlsaXR5X0tuaWZlMjAxNDAxMjkxNDAwNDEuZjNk"}
-];
+];*/
 
     // setup for PRODUCTION
-/*var _viewerEnv = "AutodeskProduction";
+var _viewerEnv = "AutodeskProduction";
 var _myAuthToken = new MyAuthToken("PROD");
 
 var _lmvModelOptions = [
@@ -50,7 +50,7 @@ var _lmvModelOptions = [
     //{ label : "View Test (OLD VERSION)",    urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L1ZpZXdUZXN0Mi5ydnQ"},
     //{ label : "Lego Guy (OLD VERSION)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L2xlZ29fZ3V5MjAxNDAxMzEwOTE5NThfY29weS5mM2Q="},
     //{ label : "Fender Guitar (OLD VERSION)",    urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L0ZlbmRlcl9TdHJhdF9OWC5zdHAuYzllNmE4ODQtZTQ1Yi00ZDdkLWI2NzItNjY2MzU5NWFhNGQ5MjAxNDAyMjAxMDQ5MDcuZjNk"}
-];*/
+];
 
     // when we switch models, we want to reset the UI for the Try It form or it might have left over
     // data about selection sets and stuff that isn't valid anymore.

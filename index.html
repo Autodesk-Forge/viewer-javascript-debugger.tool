@@ -33,12 +33,12 @@
     <script src="./scripts/libs/prism/prism.min.js"></script>
     
         <!-- Autodesk Viewer (from server: PROD) -->
-    <!--<link rel="stylesheet" href="https://viewing.api.autodesk.com/viewingservice/v1/viewers/style.css" type="text/css">
-    <script src="https://viewing.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js"></script>-->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.css" type="text/css">
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js"></script>
 
         <!-- Autodesk Viewer (from server: STAGING) -->
-    <link rel="stylesheet" href="https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/style.css?v=0.1.220" type="text/css">
-    <script src="https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js?v=0.1.220"></script>
+    <!--<link rel="stylesheet" href="https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/style.css?v=0.1.220" type="text/css">
+    <script src="https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js?v=0.1.220"></script>-->
         
         <!-- This apps includes -->
     <link href="./stylesheets/theme.css" rel="stylesheet">
@@ -121,6 +121,8 @@
                 <!-- Upon the viewer initalizaiton, it will append a div to the above div to insert the viewer.  It
                     will use 100% width and height so that it will fill up whatever the above div's dimensions are. 
                     NOTE: I had to set height in theme.css for this object or bootstrap would set height to 1px -->
+                <div id="lmvdbg_toolbar_canvas" style="position: relative; top: 10px; left: 0px; z-index: 200;"></div>
+                    <!-- the Toolbars test function will position the in-canvas toolbar using this div.  See partials/toolbars.html -->
             </div>
             <div class="col-md-3 col-md-offset-1" id="codeSnippetLinks">
                 <h4>Viewer API functions</h4>

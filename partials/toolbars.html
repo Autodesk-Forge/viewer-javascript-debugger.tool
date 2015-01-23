@@ -13,19 +13,16 @@
         #toolbar-example-orange {
             background:orange;
         }
-        #toolbar-example-yellow {
-            background:yellow;
-            border: 2px  solid black;
+        #toolbar-example-solid {
+            background: antiqueWhite;
+            border: 1px  solid black;
             border-right: 0px;
         }
-        #toolbar-example-pink {
-            background:darkmagenta;
-            border: 2px solid black;
+        #toolbar-example-gradient {
+            background: cornflowerBlue;
+            border: 1px solid black;
         }
-        .toolbar-example-black {
-            background:black;
-            border: 2px solid red;
-        }
+
          
          /* These two CSS classes control overrides for toolbar placement.  Here we add a new class
             with "-lmvdbg" suffix that will override attributes from "toolbar-menuplacer" and "toolbar-menu".
@@ -73,20 +70,21 @@
 </form>
 
 <script>
+        // init our state for this page
     var _divToolbar = null;
     var _divToolbarDivId = "lmvdbg_div_toolbar";
     var _orangeButton = null;
-    
+
     var _mainViewerSubToolbar = null;
     var _mainViewerSubToolbarId = "lmvdbg-custom";
-    
+
     var _canvasToolbar = null;
-    
+
     setButtonStatesToolbarDiv();
     setButtonStatesToolbarMain();
-    
-    
-        // These functions handle adding and removing a toolbar from the main toolbar that
+    setButtonStatesToolbarCanvas();
+        
+        // These functions handle adding and removing a toolbar from the main toolbars that
         // already part of the standard Viewer
     $("#bn_addToolbarMain").click(function(evt) {  
         evt.preventDefault();
@@ -116,7 +114,8 @@
         $('#bn_removeToolbarMain').attr("disabled", (_mainViewerSubToolbar == null));
     }
     
-        // create a new subToolbar as part of the standard viewer's toolbars
+        // create a new subToolbar as part of the standard viewer's toolbars.  We will use
+        // transparent images for the tool buttons to match the standard style.
     function createViewerToolbar(htmlDivContainer) {
 
         var mainToolbar = _viewer.getToolbar(true);
@@ -142,28 +141,36 @@
     
     
     
-    
+        // These functions add a toolbar to another part of the canvas.  We put a <div> element into the index.html that this will
+        // then position itself by (in this case, in the upper left corner of the viewer canvas)
     $("#bn_addToolbarCanvas").click(function(evt) {  
         evt.preventDefault();
         if (_canvasToolbar == null)
-            createViewerToolbarCanvas($('#viewer')[0]);   // pass in container div of where we want it
+            createViewerToolbarCanvas($('#lmvdbg_toolbar_canvas')[0]);   // pass in container div of where we want it
         else
             alert("Toolbar already created.");
         
-        //setButtonStatesToolbarMain();
+        setButtonStatesToolbarCanvas();
     });
     
     $("#bn_removeToolbarCanvas").click(function(evt) {  
         evt.preventDefault();
         _canvasToolbar.removeAllSubToolbars();
-        //_mainToolbar.destroy();
-            // TBD: above function crashes... we will cleanup manually
+
         $(".toolbar-menuplacer-lmvdbg-canvas").remove();   // remove the <div> element that is inserted when we add the toolbar
         _canvasToolbar = null;
-        
-        //setButtonStatesToolbarMain();
+    
+        setButtonStatesToolbarCanvas();
     });
     
+        // enable/disable buttons appropriately
+    function setButtonStatesToolbarCanvas() {
+        $('#bn_addToolbarCanvas').attr("disabled", (_canvasToolbar != null));
+        $('#bn_removeToolbarCanvas').attr("disabled", (_canvasToolbar == null));
+    }
+    
+        // our new toolbar will just set the background color of the viewer.  We can choose
+        // a solid color or a gradient.  Instead of images for the buttons, we will use text
     function createViewerToolbarCanvas(htmlDivContainer) {
 
         _canvasToolbar = new Autodesk.Viewing.UI.Toolbar(htmlDivContainer);
@@ -177,23 +184,25 @@
             nodes[0].classList.add("toolbar-menu-lmvdbg");
 
         var subMenuId  = "backgroundColors";
-        var bgColorTool = _canvasToolbar.addSubToolbar( subMenuId, true ); // this is acts like radiobutton
+        var bgColorTool = _canvasToolbar.addSubToolbar(subMenuId, true); // this is acts like radiobutton
 
-        var buttonYellow = Autodesk.Viewing.UI.Toolbar.createMenuButton( "toolbar-example-yellow",  "Change Viewer Background", function(e) {
-            _viewer.setBackgroundColor(255, 255, 0, 155, 155, 0);
-            bgColorTool.select( buttonYellow.id );
+        var buttonSolid = Autodesk.Viewing.UI.Toolbar.createMenuButton("toolbar-example-solid",  "Change Viewer Background - Solid", function(e) {
+            _viewer.setBackgroundColor(250,235,215, 250,235,215);
+
+            bgColorTool.select(buttonSolid.id);
         });
-        _canvasToolbar.addToSubToolbar( subMenuId, buttonYellow );
-        bgColorTool.setToolText( buttonYellow.id, "Yellow");
+        _canvasToolbar.addToSubToolbar( subMenuId, buttonSolid );
+        bgColorTool.setToolText(buttonSolid.id, "SOL");
 
-        var buttonPink = Autodesk.Viewing.UI.Toolbar.createMenuButton( "toolbar-example-pink",  "Change Viewer Background", function(e) {
-            _viewer.setBackgroundColor(255, 0, 255, 155, 0, 155);
-            bgColorTool.select( buttonPink.id );
+        var buttonGradient = Autodesk.Viewing.UI.Toolbar.createMenuButton("toolbar-example-gradient",  "Change Viewer Background - Gradient", function(e) {
+            _viewer.setBackgroundColor(0, 0, 255, 55, 248, 220);
+
+            bgColorTool.select(buttonGradient.id);
         });
-        _canvasToolbar.addToSubToolbar( subMenuId, buttonPink );
-        bgColorTool.setToolText( buttonPink.id, "Pink");
+        _canvasToolbar.addToSubToolbar(subMenuId, buttonGradient);
+        bgColorTool.setToolText(buttonGradient.id, "GRD");
 
-        // Since initially, the background has a different color, then deselect all buttons.
+            // Since initially, the background has a different color, then deselect all buttons.
         bgColorTool.deselectAll();
     }
     
@@ -212,8 +221,7 @@
     $("#bn_removeToolbarDiv").click(function(evt) {  
         evt.preventDefault();
         _divToolbar.removeAllSubToolbars();
-        //_divToolbar.destroy();
-            // TBD: above function crashes... we will cleanup manually
+    
         $(".toolbar-menuplacer-lmvdbg").remove();   // remove the <div> element that is inserted when we add the toolbar
         _divToolbar = null;
         _orangeButton = null;
