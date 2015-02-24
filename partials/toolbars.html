@@ -1,6 +1,7 @@
 
 <form class="bg-info container" action="" id="form_toolbars">
     <style>
+            /* CSS to color our custom toolbar buttons for the <div> toolbar */
         #lmvdbg_div_tb_button_red {
             background:red;
         }
@@ -13,6 +14,7 @@
         #lmvdbg_div_tb_button_orange {
             background:orange;
         }
+            /* CSS to color our custom toolbar buttons for the canvas toolbar */
         #lmvdbg_canvas_tb_button_solid {
             background: antiqueWhite;
             border: 1px  solid black;
@@ -64,19 +66,29 @@
 </form>
 
 <script>
+    
         // init our state for this page
     var _divToolbar = null;
-    var _divToolbarDivId = "lmvdbg_div_toolbar";
     var _orangeButton = null;
 
     var _mainViewerSubToolbar = null;
-    var _mainViewerSubToolbarId = "lmvdbg_viewer_toolbar";
 
     var _canvasToolbar = null;
+    
+    initToolbarVars();
 
     setButtonStatesToolbarDiv();
     setButtonStatesToolbarMain();
     setButtonStatesToolbarCanvas();
+    
+    function initToolbarVars() {
+        //debugger;
+        var mainToolbar = _viewer.getToolbar(false);
+        _mainViewerSubToolbar = mainToolbar.getControl("lmvdbg_viewer_control_group");
+        
+        // TBD: need a way to remember state of Canvas toolbar!
+    }
+
         
         // These functions handle adding and removing a toolbar from the main toolbars that
         // already part of the standard Viewer
@@ -138,9 +150,6 @@
         _mainViewerSubToolbar.addControl(button2);
 
         mainToolbar.addControl(_mainViewerSubToolbar);
-        
-            // TBD: add code to create a sub-menu for a toolbar item.  See source code "Firelfy/Gui/GuiViewer3d.js", function createCameraSubMenu()
-            // for an example of how to do it.  It requires creating some raw HTML at this point.
     }
     
     
@@ -180,7 +189,7 @@
         
             // we need to add a class to this container so we can reposition where we want (see CSS class above)
         _canvasToolbar.addClass("lmvdbg_canvas_tb_positioner");
-        _canvasToolbar.addClass("notouch");
+        //_canvasToolbar.addClass("notouch");   // TBD: make sure this bug if fixed
             
         var controlGroup = new Autodesk.Viewing.UI.ControlGroup("lmvdbg_ctrlgroup_bgcolors");
 
@@ -260,7 +269,7 @@
         
             // we need to add a class to this container so we can reposition where we want (see CSS class above)
         _divToolbar.addClass("lmvdbg_div_tb_positioner");
-        _divToolbar.addClass("notouch");
+        //_divToolbar.addClass("notouch");  // TBD: make sure this bug if fixed
         
         var controlGroup = new Autodesk.Viewing.UI.ControlGroup("lmvdbg_div_controlGroup");
 

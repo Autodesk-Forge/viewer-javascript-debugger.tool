@@ -272,7 +272,8 @@ function getAccessToken() {
 }
 
     // called when HTML page is finished loading, trigger loading of default model into viewer
-function loadInitialModel() {       
+function loadInitialModel() {
+    console.log("LMV_VIEWER_VERSION: " + LMV_VIEWER_VERSION); 
     loadModelMenuOptions();                  // populate the list of available models for the user
     
     var options = {};
