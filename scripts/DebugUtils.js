@@ -38,3 +38,14 @@ function ajaxErrorStr(jqXHR) {
     
     return tmpStr;
 }
+
+function dbgPrintLmvVersion()
+{
+        // builds greater than 0.1.98 will have a variable listing the version number
+    if (typeof LMV_VIEWER_VERSION !== "undefined") {
+        console.log("LMV_VIEWER_VERSION: " + LMV_VIEWER_VERSION);
+    }
+    else {
+        console.log("LMV_VIEWER_VERSION: 0.1.98 or earlier");
+    }
+}
