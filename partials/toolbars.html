@@ -1,48 +1,44 @@
 
 <form class="bg-info container" action="" id="form_toolbars">
     <style>
-        #toolbar-example-red {
+            /* CSS to color our custom toolbar buttons for the <div> toolbar */
+        #lmvdbg_div_tb_button_red {
             background:red;
         }
-        #toolbar-example-blue {
+        #lmvdbg_div_tb_button_blue {
             background:blue;
         }
-        #toolbar-example-green {
+        #lmvdbg_div_tb_button_green {
             background:green;
         }
-        #toolbar-example-orange {
+        #lmvdbg_div_tb_button_orange {
             background:orange;
         }
-        #toolbar-example-solid {
+            /* CSS to color our custom toolbar buttons for the canvas toolbar */
+        #lmvdbg_canvas_tb_button_solid {
             background: antiqueWhite;
             border: 1px  solid black;
             border-right: 0px;
         }
-        #toolbar-example-gradient {
+        #lmvdbg_canvas_tb_button_gradient {
             background: cornflowerBlue;
             border: 1px solid black;
         }
 
          
          /* These two CSS classes control overrides for toolbar placement.  Here we add a new class
-            with "-lmvdbg" suffix that will override attributes from "toolbar-menuplacer" and "toolbar-menu".
+            with "lmvdbg-" prefix that will override attributes from "adsk-control" and "adsk_toolbar".
             See code below in createToolbar() for finding those nodes and adding this class.  */
-        .toolbar-menuplacer-lmvdbg {
+        .lmvdbg_div_tb_positioner {
             position: relative;
             left: 0%;
+            text-align: left;
         }
-        .toolbar-menu-lmvdbg {
-            margin-left:-40%;
-        }
-        
-        .toolbar-menuplacer-lmvdbg-canvas {
+        .lmvdbg_canvas_tb_positioner {
             display: block;
             position: absolute;
             left: 0px;
             top: 0px;
-        }
-        .toolbar-menu-lmvdbg-canvas {
-            margin-left:-40%;
         }
     </style>
     
@@ -63,33 +59,43 @@
         <button id="bn_addButtonToolbarDiv" class="btn btn-primary">Add Button</button>
         <button id="bn_removeButtonToolbarDiv" class="btn btn-primary">Remove Button</button>
     </div>
-    <div id="lmvdbg_toolbar" class="form-group">
-        <p>toolbar &lt;div&gt; here --></p>
+    <div id="lmvdbg_toolbar_div" class="form-group">
+        <p>toolbar &lt;div&gt; here --></p>     <!-- this is the div we will attach our new toolbar to (for the div example) -->
     </div>
 
 </form>
 
 <script>
+    
         // init our state for this page
     var _divToolbar = null;
-    var _divToolbarDivId = "lmvdbg_div_toolbar";
     var _orangeButton = null;
 
     var _mainViewerSubToolbar = null;
-    var _mainViewerSubToolbarId = "lmvdbg-custom";
 
     var _canvasToolbar = null;
+    
+    initToolbarVars();
 
     setButtonStatesToolbarDiv();
     setButtonStatesToolbarMain();
     setButtonStatesToolbarCanvas();
+    
+    function initToolbarVars() {
+        //debugger;
+        var mainToolbar = _viewer.getToolbar(false);
+        _mainViewerSubToolbar = mainToolbar.getControl("lmvdbg_viewer_control_group");
+        
+        // TBD: need a way to remember state of Canvas toolbar!
+    }
+
         
         // These functions handle adding and removing a toolbar from the main toolbars that
         // already part of the standard Viewer
     $("#bn_addToolbarMain").click(function(evt) {  
         evt.preventDefault();
         if (_mainViewerSubToolbar == null)
-            createViewerToolbar($('#viewer')[0]);   // pass in container div of where we want it (from the location in index.html where viewer is dynamically inserted)
+            createViewerToolbarMain();
         else
             alert("Toolbar already created.");
         
@@ -102,7 +108,10 @@
         var mainToolbar = _viewer.getToolbar(false);
         console.assert(mainToolbar != null);
         
-        mainToolbar.removeSubToolbar(_mainViewerSubToolbarId);
+        //_mainViewerSubToolbar.removeControl("lmvdbg_viewer_tb_button_1");   // if we only wanted to remove a single button
+        //_mainViewerSubToolbar.removeControl("lmvdbg_viewer_tb_button_2");   // if we only wanted to remove a single button
+        mainToolbar.removeControl("lmvdbg_viewer_control_group");             // this will remove the entire group and take out the corresponding HTML
+        
         _mainViewerSubToolbar = null;
         
         setButtonStatesToolbarMain();
@@ -116,29 +125,32 @@
     
         // create a new subToolbar as part of the standard viewer's toolbars.  We will use
         // transparent images for the tool buttons to match the standard style.
-    function createViewerToolbar(htmlDivContainer) {
+    function createViewerToolbarMain() {
 
-        var mainToolbar = _viewer.getToolbar(true);
+        var mainToolbar = _viewer.getToolbar(true);     // get the main toolbar from the viewer
         console.assert(mainToolbar != null);
-
-        _mainViewerSubToolbar = mainToolbar.addSubToolbar(_mainViewerSubToolbarId, false);
         
-        var button1 = Autodesk.Viewing.UI.Toolbar.createMenuButton( "lmvdbg-button-1",  "Custom button 1", function(e) {
-            alert("Do something with button 1");
-        });
-        mainToolbar.addToSubToolbar(_mainViewerSubToolbarId, button1);
-        _mainViewerSubToolbar.setToolImage(button1.id, "res/icons/lmvdbg1.png");
+        _mainViewerSubToolbar = new Autodesk.Viewing.UI.ControlGroup("lmvdbg_viewer_control_group");
 
-        var button2 = Autodesk.Viewing.UI.Toolbar.createMenuButton( "lmvdbg-button-2",  "Custom button 2", function(e) {
-            alert("Do something with button 2");
-        });
-        mainToolbar.addToSubToolbar(_mainViewerSubToolbarId, button2);
-        _mainViewerSubToolbar.setToolImage(button2.id, "res/icons/lmvdbg2.png");
+        var button1 = new Autodesk.Viewing.UI.Button("lmvdbg_viewer_tb_button_1");
+        button1.icon.style.backgroundImage = "url(./res/icons/lmvdbg1.png)";
+        button1.setToolTip("Custom button 1");
+        button1.onClick = function(e) {
+           alert("Do something with button 1");
+        };
         
-            // TBD: add code to create a sub-menu for a toolbar item.  See source code "Firelfy/Gui/GuiViewer3d.js", function createCameraSubMenu()
-            // for an example of how to do it.  It requires creating some raw HTML at this point.
+        var button2 = new Autodesk.Viewing.UI.Button("lmvdbg_viewer_tb_button_2");
+        button2.icon.style.backgroundImage = "url(./res/icons/lmvdbg2.png)";
+        button2.setToolTip("Custom button 2");
+        button2.onClick = function(e) {
+           alert("Do something with button 2");
+        };
+
+        _mainViewerSubToolbar.addControl(button1);
+        _mainViewerSubToolbar.addControl(button2);
+
+        mainToolbar.addControl(_mainViewerSubToolbar);
     }
-    
     
     
         // These functions add a toolbar to another part of the canvas.  We put a <div> element into the index.html that this will
@@ -146,7 +158,7 @@
     $("#bn_addToolbarCanvas").click(function(evt) {  
         evt.preventDefault();
         if (_canvasToolbar == null)
-            createViewerToolbarCanvas($('#lmvdbg_toolbar_canvas')[0]);   // pass in container div of where we want it
+            createViewerToolbarCanvas($("#lmvdbg_toolbar_canvas_div")[0]);   // pass in container div of where we want it (see this in index.html)
         else
             alert("Toolbar already created.");
         
@@ -155,10 +167,10 @@
     
     $("#bn_removeToolbarCanvas").click(function(evt) {  
         evt.preventDefault();
-        _canvasToolbar.removeAllSubToolbars();
+        _canvasToolbar.removeControl("lmvdbg_ctrlgroup_bgcolors");  // this might be redundant because of the statement below (but we might want events to fire)
 
-        $(".toolbar-menuplacer-lmvdbg-canvas").remove();   // remove the <div> element that is inserted when we add the toolbar
-        _canvasToolbar = null;
+        $("#lmvdbg_canvas_toolbar").remove();   // remove the <div> element that is inserted when we add the toolbar
+       _canvasToolbar = null;
     
         setButtonStatesToolbarCanvas();
     });
@@ -172,38 +184,33 @@
         // our new toolbar will just set the background color of the viewer.  We can choose
         // a solid color or a gradient.  Instead of images for the buttons, we will use text
     function createViewerToolbarCanvas(htmlDivContainer) {
-
-        _canvasToolbar = new Autodesk.Viewing.UI.Toolbar(htmlDivContainer);
-
-            // we need to add a class to this container so we can reposition where we want (see CSS class above)
-        _canvasToolbar.container.classList.add("toolbar-menuplacer-lmvdbg-canvas");
         
-            // find the <ul> element "toolbar-menu" and add our class overrides (see CSS class above)
-        nodes = _canvasToolbar.container.getElementsByClassName("toolbar-menu");
-        if (nodes.length == 1)  // should only be one
-            nodes[0].classList.add("toolbar-menu-lmvdbg");
+        _canvasToolbar = new Autodesk.Viewing.UI.ToolBar("lmvdbg_canvas_toolbar");
+        
+            // we need to add a class to this container so we can reposition where we want (see CSS class above)
+        _canvasToolbar.addClass("lmvdbg_canvas_tb_positioner");
+        //_canvasToolbar.addClass("notouch");   // TBD: make sure this bug if fixed
+            
+        var controlGroup = new Autodesk.Viewing.UI.ControlGroup("lmvdbg_ctrlgroup_bgcolors");
 
-        var subMenuId  = "backgroundColors";
-        var bgColorTool = _canvasToolbar.addSubToolbar(subMenuId, true); // this is acts like radiobutton
-
-        var buttonSolid = Autodesk.Viewing.UI.Toolbar.createMenuButton("toolbar-example-solid",  "Change Viewer Background - Solid", function(e) {
-            _viewer.setBackgroundColor(250,235,215, 250,235,215);
-
-            bgColorTool.select(buttonSolid.id);
-        });
-        _canvasToolbar.addToSubToolbar( subMenuId, buttonSolid );
-        bgColorTool.setToolText(buttonSolid.id, "SOL");
-
-        var buttonGradient = Autodesk.Viewing.UI.Toolbar.createMenuButton("toolbar-example-gradient",  "Change Viewer Background - Gradient", function(e) {
-            _viewer.setBackgroundColor(0, 0, 255, 55, 248, 220);
-
-            bgColorTool.select(buttonGradient.id);
-        });
-        _canvasToolbar.addToSubToolbar(subMenuId, buttonGradient);
-        bgColorTool.setToolText(buttonGradient.id, "GRD");
-
-            // Since initially, the background has a different color, then deselect all buttons.
-        bgColorTool.deselectAll();
+        var buttonSolid = new Autodesk.Viewing.UI.Button("lmvdbg_canvas_tb_button_solid");          // id passed in will trigger CSS above to style button (or you can add a CSS class)
+        buttonSolid.icon.style.backgroundImage = "url(./res/icons/lmvdbgSolid.png)";
+        buttonSolid.setToolTip("Change Viewer Background - Solid");
+        buttonSolid.onClick = function(e) {
+           _viewer.setBackgroundColor(250,235,215, 250,235,215);
+        };
+        controlGroup.addControl(buttonSolid);
+        
+        var buttonGradient = new Autodesk.Viewing.UI.Button("lmvdbg_canvas_tb_button_gradient");    // id passed in will trigger CSS above to style button
+        buttonGradient.icon.style.backgroundImage = "url(./res/icons/lmvdbgGradient.png)";
+        buttonGradient.setToolTip("Change Viewer Background - Gradient");
+        buttonGradient.onClick = function(e) {
+           _viewer.setBackgroundColor(0, 0, 255, 55, 248, 220);
+        };
+        controlGroup.addControl(buttonGradient);
+        _canvasToolbar.addControl(controlGroup);
+        
+        htmlDivContainer.appendChild(_canvasToolbar.container);
     }
     
     
@@ -211,7 +218,7 @@
     $("#bn_addToolbarDiv").click(function(evt) {  
         evt.preventDefault();
         if (_divToolbar == null)
-            createToolbar( $('#lmvdbg_toolbar')[0] );   // pass in container div of where we want it
+            createToolbar( $("#lmvdbg_toolbar_div")[0] );   // pass in container div of where we want it
         else
             alert("Toolbar already created for this <div>");
         
@@ -220,9 +227,9 @@
     
     $("#bn_removeToolbarDiv").click(function(evt) {  
         evt.preventDefault();
-        _divToolbar.removeAllSubToolbars();
+        _divToolbar.removeControl("lmvdbg_div_controlGroup");
     
-        $(".toolbar-menuplacer-lmvdbg").remove();   // remove the <div> element that is inserted when we add the toolbar
+        $("#lmvdbg_div_toolbar").remove();   // remove the <div> element that is inserted when we add the toolbar
         _divToolbar = null;
         _orangeButton = null;
         
@@ -258,51 +265,55 @@
     
         // add a toolbar outside of the regular location.  In this case, in a random div in our form
     function createToolbar(htmlDivContainer) {
-        _divToolbar = new Autodesk.Viewing.UI.Toolbar(htmlDivContainer);
+        _divToolbar = new Autodesk.Viewing.UI.ToolBar("lmvdbg_div_toolbar");
         
             // we need to add a class to this container so we can reposition where we want (see CSS class above)
-        _divToolbar.container.classList.add("toolbar-menuplacer-lmvdbg");
+        _divToolbar.addClass("lmvdbg_div_tb_positioner");
+        //_divToolbar.addClass("notouch");  // TBD: make sure this bug if fixed
         
-            // find the <ul> element "toolbar-menu" and add our class overrides (see CSS class above)
-        nodes = _divToolbar.container.getElementsByClassName("toolbar-menu");
-        if (nodes.length == 1)  // should only be one
-            nodes[0].classList.add("toolbar-menu-lmvdbg");
+        var controlGroup = new Autodesk.Viewing.UI.ControlGroup("lmvdbg_div_controlGroup");
 
-        var panelToolSubMenu = _divToolbar.addSubToolbar(_divToolbarDivId, false);
-
-        var buttonRed = Autodesk.Viewing.UI.Toolbar.createMenuButton( "toolbar-example-red", "Do something Red", function(e)
-        {
-            alert("You picked the Red button!");
-        });
-        _divToolbar.addToSubToolbar(_divToolbarDivId, buttonRed);
-
-        var buttonBlue = Autodesk.Viewing.UI.Toolbar.createMenuButton("toolbar-example-blue",  "Do something Blue", function(e)
-        {
-            alert("You picked the Blue button!");
-        });
-        _divToolbar.addToSubToolbar(_divToolbarDivId, buttonBlue);
-
-
-        var buttonGreen = Autodesk.Viewing.UI.Toolbar.createMenuButton("toolbar-example-green",  "Do something Green", function(e)
-        {
-            alert("You picked the Green button!");
-
-        });
-        _divToolbar.addToSubToolbar(_divToolbarDivId, buttonGreen);
+        var buttonRed = new Autodesk.Viewing.UI.Button("lmvdbg_div_tb_button_red"); // id passed in will trigger CSS above
+        buttonRed.setToolTip("Do something Red");
+        buttonRed.onClick = function(e) {
+           alert("You picked the Red button!");
+        };
+        controlGroup.addControl(buttonRed);
+        
+        var buttonGreen = new Autodesk.Viewing.UI.Button("lmvdbg_div_tb_button_green");
+        buttonGreen.setToolTip("Do something Green");
+        buttonGreen.onClick = function(e) {
+           alert("You picked the Green button!");
+        };
+        controlGroup.addControl(buttonGreen);
+        
+        var buttonBlue = new Autodesk.Viewing.UI.Button("lmvdbg_div_tb_button_blue");
+        buttonBlue.setToolTip("Do something Blue");
+        buttonBlue.onClick = function(e) {
+           alert("You picked the Blue button!");
+        };
+        controlGroup.addControl(buttonBlue);
+        
+        _divToolbar.addControl(controlGroup);
+        
+        htmlDivContainer.appendChild(_divToolbar.container);
     }
     
-        // dynamicall add a new button
+        // dynamically add a new button
     function addToolbarButton() {
-        _orangeButton = Autodesk.Viewing.UI.Toolbar.createMenuButton("toolbar-example-orange",  "Do something Orange", function(e) {
-            alert("You picked the Orange button!")
-        });
-        _divToolbar.addToSubToolbar(_divToolbarDivId, _orangeButton);
+        _orangeButton = new Autodesk.Viewing.UI.Button("lmvdbg_div_tb_button_orange");
+        _orangeButton.setToolTip("Do something Orange");
+        _orangeButton.onClick = function(e) {
+           alert("You picked the Orange button!");
+        };
+        _divToolbar.getControl("lmvdbg_div_controlGroup").addControl(_orangeButton);
+        
     }
     
         // dynamically remove a button
     function removeToolbarButton() {
         if (_orangeButton) {
-            _divToolbar.removeFromSubToolbar(_divToolbarDivId, _orangeButton);
+            _divToolbar.getControl("lmvdbg_div_controlGroup").removeControl(_orangeButton);
             _orangeButton = null;
         }
     }

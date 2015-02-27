@@ -29,7 +29,8 @@ var _lmvModelOptions = [
     { label : "ViewTest1 (Revit)",          urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9WaWV3VGVzdDEucnZ0"},
     { label : "Factory (Navisworks)",       urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9Db21wbGV0ZWQlMjBQbGFudCUyMExheW91dCUyMGNvbnN0cnVjdGlvbi5ud2Q="},
     { label : "Lego Guy (Fusion)",          urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9sZWdvX2d1eTIwMTQwMTMxMDkxOTU4LmYzZA=="},
-    { label : "Utility Knife (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9VdGlsaXR5X0tuaWZlMjAxNDAxMjkxNDAwNDEuZjNk"}
+    { label : "Utility Knife (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9VdGlsaXR5X0tuaWZlMjAxNDAxMjkxNDAwNDEuZjNk"},
+    { label : "2D Floorplan (DWG)",         urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bG12ZGJnX3N0Zy8yRCUyMEZsb29ycGxhbi5kd2c="}
 ];*/
 
     // setup for PRODUCTION
@@ -46,10 +47,6 @@ var _lmvModelOptions = [
     { label : "Utility Knife (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9VdGlsaXR5X0tuaWZlMjAxNDAxMjkxNDAwNDEuZjNk"},
     { label : "Fender Guitar (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9GZW5kZXJfU3RyYXRfTlguc3RwLmM5ZTZhODg0LWU0NWItNGQ3ZC1iNjcyLTY2NjM1OTVhYTRkOTIwMTQwMjIwMTA0OTA3LmYzZA=="},
     { label : "Whiskey Drinks (DWG)",       urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bG12ZGJnX3Byb2Qvd2hpc2tleS1kcmlua3MuZHdn"}
-    
-    //{ label : "View Test (OLD VERSION)",    urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L1ZpZXdUZXN0Mi5ydnQ"},
-    //{ label : "Lego Guy (OLD VERSION)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L2xlZ29fZ3V5MjAxNDAxMzEwOTE5NThfY29weS5mM2Q="},
-    //{ label : "Fender Guitar (OLD VERSION)",    urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0L0ZlbmRlcl9TdHJhdF9OWC5zdHAuYzllNmE4ODQtZTQ1Yi00ZDdkLWI2NzItNjY2MzU5NWFhNGQ5MjAxNDAyMjAxMDQ5MDcuZjNk"}
 ];
 
     // when we switch models, we want to reset the UI for the Try It form or it might have left over
@@ -118,13 +115,11 @@ function loadViewMenuOptions() {
     if (index >= 1000) {    // 2D views we gave a higher index to in the Popup menu
         index -= 1000;
         console.log("Changing to 2D view: " + _views2D[index].name);
-        //initializeViewer();
         switchSheet();
         loadView(_views2D[index]);
     }
     else {
         console.log("Changing to 3D view: " + _views3D[index].name);
-        //initializeViewer();
         switchSheet();
         loadView(_views3D[index]);
     }
@@ -145,15 +140,6 @@ function switchSheet() {
     _viewer.setUp();    // set it up again for a new asset to be loaded
 }
 
-// STEPS:
-//  0)  Initialize the Viewing Runtime
-//  1)  Load a Document
-//  2)  Get the available views (both 2D and 3D)
-//  3)  Load a specific view
-//      a)  initialize viewer for 2D or 3D
-//      b)  load a "viewable" into the appropriate version of the viewer
-//  4)  Attach a "listener" so we can keep track of events like Selection
-
 
     // initialize the viewer into the HTML placeholder
 function initializeViewer() {
@@ -167,14 +153,7 @@ function initializeViewer() {
     }
 
     var viewerElement = document.getElementById("viewer");  // placeholder in HTML to stick the viewer
-        
-        // NOTE: as of October 2014, both 2D and 3D use the Viewer3D object.  But, that requires newly translated
-        // content.  2D sheets translated before that date will not work in this viewer and you need some logic
-        // to invoke the old Viewer2D object.
-        // ALSO: because the use the same viewer object, the same API exists for both 2D and 3D, but some functions
-        // obviously don't make sense in 2D.  The viewer object will have to be split into two or the API will have
-        // to be more forgiving when called in the wrong context.  We will fix this as we move forward, but for now,
-        // the "bad" answer is:  "don't do that!".
+    
     _viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerElement, {});
    
     var retCode = _viewer.initialize();
@@ -271,7 +250,9 @@ function getAccessToken() {
 }
 
     // called when HTML page is finished loading, trigger loading of default model into viewer
-function loadInitialModel() {       
+function loadInitialModel() {
+    dbgPrintLmvVersion();
+    
     loadModelMenuOptions();                  // populate the list of available models for the user
     
     var options = {};
