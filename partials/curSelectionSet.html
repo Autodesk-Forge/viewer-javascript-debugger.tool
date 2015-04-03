@@ -191,6 +191,9 @@
             alert("There are no properties for this node.");
             return;
         }
+        
+        console.log("Properties: %O", data.properties);
+
             // iterate over the properties and just build a simple name value pair in a big string.
         var tblStr = "";
         $.each(data.properties, function(num, obj) {
