@@ -1,0 +1,35 @@
+
+<form class="bg-info container" action="" id="form_screenGrab">
+    <div class="form-group">
+        <h4>Get Screen Shot</h4>
+        <h5>Scrapes the current screen and makes an image</h5>
+        <button id="bn_screenGrab" class="btn btn-primary">Get Screen Shot (default size)</button>
+        <button id="bn_screenGrabSized" class="btn btn-primary">Get Screen Shot (specified size)</button>
+    </div>
+</form>
+
+<script>
+    $("#bn_screenGrab").click(function(evt) {  
+         evt.preventDefault();
+
+            // passing in no arguments will immediately return a blobURL to the currently sized
+            // screen.
+         var blobUrl = _viewer.getScreenShot();
+         console.log("BlobURL: %s", blobUrl);
+         window.open(blobUrl);
+    });
+    
+    $("#bn_screenGrabSized").click(function(evt) {  
+         evt.preventDefault();
+
+            // emulate getting a Thumbnail sized image.  Passing in a specific size causes us to 
+            // need to also pass in a callback function for when the re-size is complete.
+         _viewer.getScreenShot(300, 200, function(blobUrl) {
+            console.log("BlobURL: %s", blobUrl);
+            window.open(blobUrl);
+         });
+    });
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+
+</script>

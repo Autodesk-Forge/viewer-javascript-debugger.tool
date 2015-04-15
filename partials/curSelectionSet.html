@@ -120,8 +120,16 @@
         var manSelSet = parseManualSelSet();
         if (manSelSet.length == 0)
             alert("No Object IDs specified.");
-        else
-            _viewer.hide(manSelSet);
+        else {
+                // NOTE:  I would expect to be able to pass in regular DbIDs here, but I instead have to pass
+                // in Node objects.  A future version of the API will likely address this, but for now, pass in Nodes.
+            var nodeIdArr = [];
+            for (i=0;i<manSelSet.length;i++)
+                nodeIdArr.push(_viewer.model.getNodeById(manSelSet[i]));
+
+            //_viewer.hide(manSelSet);  // TBD: switch this back when API is cleaned up.
+            _viewer.hide(nodeIdArr);
+        }
     });
     
     $("#bn_manToggleVis").click(function(evt) {  
@@ -132,8 +140,14 @@
             alert("No Object IDs specified.");
         else if (manSelSet.length > 1)
             alert("Only one item can be specified.");
-        else
-            _viewer.toggleVisibility(manSelSet[0]);  // can only pass a single id, not an array
+        else {
+                // NOTE:  I would expect to be able to pass in regular DbIDs here, but I instead have to pass
+                // in Node objects.  A future version of the API will likely address this, but for now, pass in Nodes.
+            var tmpObj = _viewer.model.getNodeById(manSelSet[0]);
+            _viewer.toggleVisibility(tmpObj);
+
+            //_viewer.toggleVisibility(manSelSet[0]);  // can only pass a single id, not an array
+        }
     });
     
     $("#bn_manIsolate").click(function(evt) {  

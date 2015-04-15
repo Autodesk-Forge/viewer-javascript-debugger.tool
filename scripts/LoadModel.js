@@ -240,8 +240,13 @@ function loadViewErrorFunc()
 function loadView(viewObj) {
     var path = _loadedDocument.getViewablePath(viewObj);
     console.log("Loading view URN: " + path);
+        
+        // TEST:  trying out loading only specific objects instead of the whole model.  Almost works, but needs
+        // a little bit of polish.
+    //var idArray = [1023, 1018, 1898];   // hardwire 3 walls of default revit file
+    //_viewer.loadModel(path, idArray, _loadedDocument.getPropertyDbPath(), loadViewSuccessFunc, loadViewErrorFunc);
+    
     _viewer.load(path, _loadedDocument.getPropertyDbPath(), loadViewSuccessFunc, loadViewErrorFunc);
-    //_viewer.load(path);
 }
 
     // wrap this in a simple function so we can pass it into the Initializer options object
