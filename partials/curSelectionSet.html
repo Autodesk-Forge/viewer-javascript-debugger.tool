@@ -53,8 +53,15 @@
 
     $("#bn_hide").click(function(evt) {  
         evt.preventDefault();
+        
+            // NOTE:  I would expect to be able to pass in regular DbIDs here, but I instead have to pass
+            // in Node objects.  A future version of the API will likely address this, but for now, pass in Nodes.
+        var nodeIdArr = [];
+        for (i=0;i<_curSelSet.length;i++)
+            nodeIdArr.push(_viewer.model.getNodeById(_curSelSet[i]));
 
-        _viewer.hide(_curSelSet);
+        //_viewer.hide(_curSelSet);  // TBD: switch this back when API is cleaned up.
+        _viewer.hide(nodeIdArr);
     });
 
     $("#bn_fitToView").click(function(evt) {  
