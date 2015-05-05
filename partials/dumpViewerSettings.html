@@ -16,10 +16,11 @@
          
          console.log("Viewer: %O", _viewer);
          
+         console.log("detectWebGL: %f", detectWebGL());
+
          console.log("viewer.anyLayerHidden: %s", _viewer.anyLayerHidden());
          console.log("viewer.areAllVisible: %s", _viewer.areAllVisible());
          console.log("viewer.canChangeScreenMode: %s", _viewer.canChangeScreenMode());
-         console.log("viewer.detectWebGL: %f", _viewer.detectWebGL());
          console.log("viewer.escapeScreenMode: %s", _viewer.escapeScreenMode());
          console.log("viewer.getActiveNavigationTool: %s", _viewer.getActiveNavigationTool());
          console.log("viewer.getCamera: %O", _viewer.getCamera());
@@ -37,11 +38,11 @@
          
          var screenMode = _viewer.getScreenMode();
          var screenModeStr;
-         if (screenMode == Autodesk.Viewing.Viewer.ScreenMode.kNormal)
+         if (screenMode == Autodesk.Viewing.ScreenMode.kNormal)
              screenModeStr = "kNormal";
-         else if (screenMode == Autodesk.Viewing.Viewer.ScreenMode.kFullBrowser)
+         else if (screenMode == Autodesk.Viewing.ScreenMode.kFullBrowser)
              screenModeStr = "kFullBrowser";
-         else if (screenMode == Autodesk.Viewing.Viewer.ScreenMode.kFullScreen)
+         else if (screenMode == Autodesk.Viewing.ScreenMode.kFullScreen)
              screenModeStr = "kFullScreen";
          else
              screenModeStr = "*UNKNOWN*";
@@ -49,9 +50,9 @@
          console.log("viewer.getScreenMode: %s", screenModeStr);
          console.log("viewer.getScreenModeDelegate: %O", _viewer.getScreenModeDelegate());
          console.log("viewer.getState: %O", _viewer.getState());
-         console.log("viewer.isScreenModeSupported(kNormal): %s", _viewer.isScreenModeSupported(Autodesk.Viewing.Viewer.ScreenMode.kNormal));
-         console.log("viewer.isScreenModeSupported(kFullBrowser): %s", _viewer.isScreenModeSupported(Autodesk.Viewing.Viewer.ScreenMode.kFullBrowser));
-         console.log("viewer.isScreenModeSupported(kFullScreen): %s", _viewer.isScreenModeSupported(Autodesk.Viewing.Viewer.ScreenMode.kFullScreen));
+         console.log("viewer.isScreenModeSupported(kNormal): %s", _viewer.isScreenModeSupported(Autodesk.Viewing.ScreenMode.kNormal));
+         console.log("viewer.isScreenModeSupported(kFullBrowser): %s", _viewer.isScreenModeSupported(Autodesk.Viewing.ScreenMode.kFullBrowser));
+         console.log("viewer.isScreenModeSupported(kFullScreen): %s", _viewer.isScreenModeSupported(Autodesk.Viewing.ScreenMode.kFullScreen));
          //console.log("viewer.nextScreenMode: %s", _viewer.nextScreenMode());      // causes it to actually change to the next screen mode
          
          console.groupEnd();

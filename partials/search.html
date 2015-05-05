@@ -26,8 +26,8 @@
                 console.log("LmvDbg - Search Results (ids): %O", idArray);
                 
                     // now go retrieve them and dump them to the debugger console
-                var objPropsArray = [];
-                $.each(idArray,function(num, dbid) {
+               /* var objPropsArray = [];
+                $.each(idArray, function(num, dbid) {
                     _viewer.getProperties(dbid,
                         function(propData) {
                             objPropsArray.push(propData);
@@ -36,12 +36,15 @@
                             console.log("ERROR: " + errCode + " " + messageStr);
                         }
                     );
-                });
+                });*/
                 
                 // NOTE: debugger will show this array with 0 items, but actually has correct number when you expand it,
                 // presumably because of the asyncrhonous call above.  Later I will try out a $.when() clause
                 // to see if I can fix this. -- jma
-                console.log("LmvDbg - Search Results (props): %O", objPropsArray);
+                //console.log("LmvDbg - Search Results (props): %O", objPropsArray);
+            },
+            function searchError() {
+                alert("Error executing search");
             });
         }
     });
