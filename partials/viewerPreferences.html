@@ -1,0 +1,222 @@
+
+<form class="bg-info container" action="" id="form_viewerPref">
+    <div class="form-group">
+        <h4>Viewer Preferences</h4>
+        <div class="col-md-4">
+            <h5>Navigation and Selection</h5>
+            <div class="checkbox">
+                <label><input id="cb_showViewCube" type="checkbox"> Show ViewCube</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_viewCubeActsOnPivot" type="checkbox"> ViewCube acts on pivot</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_zoomTowardsPivot" type="checkbox"> Zoom towards pivot</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_pivotWithLeftMB" type="checkbox"> Set pivot with left mouse button</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_fusionStyleOrbit" type="checkbox"> Fusion style orbit</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_firstPersonWalk" type="checkbox"> First person walk</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_reverseZoomMouseDirection" type="checkbox"> Reverse mouse zoom direction</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_orbitPastWorldPoles" type="checkbox"> Orbit past world poles</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_openPropertiesOnSelect" type="checkbox"> Open properties on select</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_leftHandedMouseSetup" type="checkbox"> Left handed mouse setup</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_reverseHorizLookDir" type="checkbox"> Reverse horizontal look direction</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_reverseVertLookDir" type="checkbox"> Reverse vertical look direction</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h5>Performance and Appearance</h5>
+            <div class="checkbox">
+                <label><input id="cb_ghosting" type="checkbox"> Ghosting</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_smoothNavigation" type="checkbox"> Smooth navigation</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_ambientShadows" type="checkbox"> Ambient shadows</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_antiAliasing" type="checkbox"> Anti-aliasing</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_groundShadow" type="checkbox"> Ground shadow</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_groundReflection" type="checkbox"> Ground reflection</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_progressiveModelDisplay" type="checkbox"> Progressive model display</label>
+            </div>
+            <div class="checkbox">
+                <label><input id="cb_displayLines" type="checkbox"> Display lines</label>
+            </div>
+            <div class="select">
+                <label for="pu_backgroundAndLighting">Background and lighting</label>
+                <select id="pu_backgroundAndLighting" class="form-control" name="bgAndLighting">
+                    <option value="0">Simple Grey</option>
+                    <option value="1">Sharp Highlights</option>
+                    <option value="2">Dark Sky</option>
+                    <option value="3">Grey Room</option>
+                    <option value="4">Photo Booth</option>
+                    <option value="5">Tranquility</option>
+                    <option value="6">Inifinity Pool</option>
+                    <option value="7">Simple White</option>
+                    <option value="8">Riverbank</option>
+                    <option value="9">Contrast</option>
+                    <option value="10">Rim Highlights</option>
+                    <option value="11">Cool Light</option>
+                    <option value="12">Warm Light</option>
+                    <option value="13">Soft Light</option>
+                    <option value="14">Grid Light</option>
+                    <option value="15">Plaza</option>
+                    <option value="16">Snowfield</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+        // Navigation and Selection
+    $("#cb_showViewCube").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.displayViewCube($("#cb_showViewCube").is(":checked"));
+    });
+    $("#cb_viewCubeActsOnPivot").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setUsePivotAlways($("#cb_viewCubeActsOnPivot").is(":checked"));
+    });
+    $("#cb_zoomTowardsPivot").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setZoomTowardsPivot($("#cb_zoomTowardsPivot").is(":checked"));
+    });
+    $("#cb_pivotWithLeftMB").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setClickToSetCOI($("#cb_pivotWithLeftMB").is(":checked"));
+    });
+    $("#cb_fusionStyleOrbit").change(function(evt) {  
+        evt.preventDefault();
+        if ($("#cb_fusionStyleOrbit").is(":checked"))
+            _viewer.loadExtension('Autodesk.Viewing.FusionOrbit', null);
+        else
+            _viewer.unloadExtension('Autodesk.Viewing.FusionOrbit', null);
+    });
+    $("#cb_firstPersonWalk").change(function(evt) {  
+        evt.preventDefault();
+        if ($("#cb_firstPersonWalk").is(":checked")) {
+            _viewer.unloadExtension('Autodesk.Beeline', null);
+            _viewer.loadExtension('Autodesk.FirstPerson', null);
+        }
+        else {
+            _viewer.unloadExtension('Autodesk.FirstPerson', null);
+            _viewer.loadExtension('Autodesk.Beeline', null);
+        }
+    });
+    $("#cb_reverseZoomMouseDirection").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setReverseZoomDirection($("#cb_reverseZoomMouseDirection").is(":checked"));
+    });
+    $("#cb_orbitPastWorldPoles").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setOrbitPastWorldPoles($("#cb_orbitPastWorldPoles").is(":checked"));
+    });
+    $("#cb_openPropertiesOnSelect").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setPropertiesOnSelect($("#cb_openPropertiesOnSelect").is(":checked"));
+    });
+    $("#cb_leftHandedMouseSetup").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setUseLeftHandedInput($("#cb_leftHandedMouseSetup").is(":checked"));
+    });
+    $("#cb_reverseHorizLookDir").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setReverseHorizontalLookDirection($("#cb_reverseHorizLookDir").is(":checked"));
+    });
+    $("#cb_reverseVertLookDir").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setReverseVerticalLookDirection($("#cb_reverseVertLookDir").is(":checked"));
+    });
+    
+    $("#cb_showViewCube").attr("checked", _viewer.prefs.viewCube);
+    $("#cb_viewCubeActsOnPivot").attr("checked", _viewer.prefs.alwaysUsePivot);
+    $("#cb_zoomTowardsPivot").attr("checked", _viewer.prefs.zoomTowardsPivot);
+    $("#cb_pivotWithLeftMB").attr("checked", _viewer.prefs.clickToSetCOI);
+    $("#cb_fusionStyleOrbit").attr("checked", _viewer.prefs.fusionOrbit);
+    $("#cb_firstPersonWalk").attr("checked", _viewer.prefs.useFirstPersonNav);
+    $("#cb_reverseZoomMouseDirection").attr("checked", _viewer.prefs.reverseMouseZoomDir);
+    $("#cb_orbitPastWorldPoles").attr("checked", _viewer.prefs.orbitPastWorldPoles);
+    $("#cb_openPropertiesOnSelect").attr("checked", _viewer.prefs.openPropertiesOnSelect);
+    $("#cb_leftHandedMouseSetup").attr("checked", _viewer.prefs.leftHandedMouseSetup);
+    $("#cb_reverseHorizLookDir").attr("checked", _viewer.prefs.reverseHorizontalLookDirection);
+    $("#cb_reverseVertLookDir").attr("checked", _viewer.prefs.reverseVerticalLookDirection);
+
+    
+        // Performance and Appearance
+    $("#cb_ghosting").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setGhosting($("#cb_ghosting").is(":checked"));
+    });
+    $("#cb_smoothNavigation").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setOptimizeNavigation($("#cb_smoothNavigation").is(":checked"));
+    });
+    $("#cb_ambientShadows").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setQualityLevel($("#cb_ambientShadows").is(":checked"), _viewer.prefs.antialiasing);
+    });
+    $("#cb_antiAliasing").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setQualityLevel(_viewer.prefs.ambientShadows, $("#cb_antiAliasing").is(":checked"));
+    });
+    $("#cb_groundShadow").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setGroundShadow($("#cb_groundShadow").is(":checked"));
+    });
+    $("#cb_groundReflection").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setGroundShadow($("#cb_groundReflection").is(":checked"));
+    });
+    $("#cb_progressiveModelDisplay").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setProgressiveRendering($("#cb_progressiveModelDisplay").is(":checked"));
+    });
+    $("#cb_displayLines").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.hideLines(!($("#cb_displayLines").is(":checked")));
+    });
+    $("#pu_backgroundAndLighting").change(function(evt) {  
+        evt.preventDefault();
+        _viewer.setLightPreset($("#pu_backgroundAndLighting").val());
+    });
+    
+    
+    $("#cb_ghosting").attr("checked", _viewer.prefs.ghosting);
+    $("#cb_smoothNavigation").attr("checked", _viewer.prefs.optimizeNavigation);
+    $("#cb_ambientShadows").attr("checked", _viewer.prefs.ambientShadows);
+    $("#cb_antiAliasing").attr("checked", _viewer.prefs.antialiasing);
+    $("#cb_groundShadow").attr("checked", _viewer.prefs.groundShadow);
+    $("#cb_groundReflection").attr("checked", _viewer.prefs.groundReflection);
+    $("#cb_progressiveModelDisplay").attr("checked", _viewer.prefs.progressiveRendering);
+    $("#cb_displayLines").attr("checked", _viewer.prefs.lineRendering);
+    $("#pu_backgroundAndLighting").val(_viewer.prefs.lightPreset);
+    
+    console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
+
+</script>

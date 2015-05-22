@@ -50,7 +50,7 @@
             var tree = $.jstree.reference("#jstree_div"); //get tree instance
 
             if (tree.is_leaf("#"))  // # means root
-                recursiveAddChildrenToTree(tree, "#", objTree.children);
+                recursiveAddChildrenToTree(tree, "#", objTree.root.children);
             else
                 console.log("LmvDbg: Tree already populated, skipping.");
         });
@@ -99,16 +99,6 @@
                 
         return selNodes;
     }
-    
-        // API is in a mixed state.  sometimes we need dbIds and sometimes we need nodeIds.
-        // In the process of cleaning this up now. (4/28/15)
-    function convertToNodeIds(selNodes) {
-        var nodeIdArr = [];
-        for (i=0;i<selNodes.length;i++) {
-            nodeIdArr.push(_viewer.model.getNodeById(selNodes[i].data.dbId));
-        }
-        return nodeIdArr;
-    }
         
         // this function is called from jsTree to provide the menu items for a right-click context menu on a tree node
     function customRightClickTreeMenu(node) {
@@ -127,7 +117,7 @@
                 "action" : function (obj) {
                     var selNodes = getCurrentTreeSelectedObjs();
                     $.each(selNodes, function(num, treeNode) {
-                        _viewer.isolateById(treeNode.data.dbId);
+                        _viewer.isolate(treeNode.data.dbId);
                     });
                 }
             },
@@ -135,11 +125,9 @@
                 "label" : "Hide", 
                 "action" : function (obj) {
                     var selNodes = getCurrentTreeSelectedObjs();
-                    //$.each(selNodes, function(num, treeNode) {
-                    //    _viewer.hide(treeNode.data.dbId);
-                    //});
-                    
-                    _viewer.hide(convertToNodeIds(selNodes));
+                    $.each(selNodes, function(num, treeNode) {
+                        _viewer.hide(treeNode.data.dbId);
+                    });
                 }
             },
             "show" : {

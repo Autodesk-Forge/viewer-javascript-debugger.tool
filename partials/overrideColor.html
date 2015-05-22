@@ -48,6 +48,7 @@
                 delete mesh.myProxy;
             }
         }
+        _viewer.impl.invalidate(false, false, true);
         _overrideFragIds = [];      // reset the fragIds array
     });
     
@@ -65,18 +66,26 @@
         // walk the list of objects that have geometry and get their fragments.
     function overrideColorOnObj(objs, colorOverlayName) {
         for (i=0; i<objs.length; i++) {
-            var tmpObj = _viewer.model.getNodeById(objs[i]);
-                // the property "fragIds" is either a single number or an array.
-                // Here we make it consistently an array so that we can loop through
-                // it easier.
-            if (!Array.isArray(tmpObj.fragIds)) {
-                var tmpFragArray = [ tmpObj.fragIds ];
-                overrideColorOnFragments(tmpFragArray, colorOverlayName);
-            }
-            else {
-                overrideColorOnFragments(tmpObj.fragIds, colorOverlayName);
-            }
+            
+            _viewer.model.getData().instanceTree.enumNodeFragments(objs[i], function(fragId) {
+                //if (!Array.isArray(fragId)) {
+                //    var tmpFragArray = [ fragId ];
+                //    overrideColorOnFragments(tmpFragArray, colorOverlayName);
+                //}
+                //else {
+                    overrideColorOnFragment(fragId, colorOverlayName);
+                //}
+            }, true);
         }
+    }
+    
+    function overrideColorOnFragment(fragId, overlayName) {
+        var mesh = _viewer.impl.getRenderProxy(_viewer.impl.model, fragId);
+        mesh.myProxy = new THREE.Mesh(mesh.geometry, mesh.material, true);
+        mesh.myProxy.matrixWorld = mesh.matrixWorld;
+        _viewer.impl.addOverlay(overlayName, mesh.myProxy);
+
+        _overrideFragIds.push(fragId);  // keep track of the frags so that we can remove later
     }
     
         // walk the list of fragments and add the overlay to its geometry
@@ -94,7 +103,9 @@
         // arbitrary way to split the objects into separate groups to color code
     function getObjsBasedOnSomeCondition(objs1, objs2) {
         _viewer.getObjectTree(function(objTree) {
-            recursiveAddChildrenToSets(objTree.children, objs1, objs2);
+            recursiveAddChildrenToSets(objTree.root.children, objs1, objs2);
+            //console.log("Odd set:  %O", objs1);
+            //console.log("Even set: %O", objs2);
         });
     }
     

@@ -18,7 +18,7 @@ var _views3D = null;
 var _savedViewerStates = [];
 
     // setup for STAGING
-/*var _viewerEnv = "AutodeskStaging";
+var _viewerEnv = "AutodeskStaging";
 var _myAuthToken = new MyAuthToken("STG");
 
 var _lmvModelOptions = [
@@ -29,10 +29,10 @@ var _lmvModelOptions = [
     { label : "Lego Guy (Fusion)",          urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9sZWdvX2d1eTIwMTQwMTMxMDkxOTU4LmYzZA=="},
     { label : "Utility Knife (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0My9VdGlsaXR5X0tuaWZlMjAxNDAxMjkxNDAwNDEuZjNk"},
     { label : "2D Floorplan (DWG)",         urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bG12ZGJnX3N0Zy8yRCUyMEZsb29ycGxhbi5kd2c="}
-];*/
+];
 
     // setup for PRODUCTION
-var _viewerEnv = "AutodeskProduction";
+/*var _viewerEnv = "AutodeskProduction";
 var _myAuthToken = new MyAuthToken("PROD");
 
 var _lmvModelOptions = [
@@ -45,7 +45,7 @@ var _lmvModelOptions = [
     { label : "Utility Knife (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9VdGlsaXR5X0tuaWZlMjAxNDAxMjkxNDAwNDEuZjNk"},
     { label : "Fender Guitar (Fusion)",     urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am1hYnVja2V0NC9GZW5kZXJfU3RyYXRfTlguc3RwLmM5ZTZhODg0LWU0NWItNGQ3ZC1iNjcyLTY2NjM1OTVhYTRkOTIwMTQwMjIwMTA0OTA3LmYzZA=="},
     { label : "Whiskey Drinks (DWG)",       urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bG12ZGJnX3Byb2Qvd2hpc2tleS1kcmlua3MuZHdn"}
-];
+];*/
 
     // when we switch models, we want to reset the UI for the Try It form or it might have left over
     // data about selection sets and stuff that isn't valid anymore.
@@ -163,10 +163,11 @@ function initializeViewer() {
         _curSelSet = event.dbIdArray;
         console.log("LmvDbg: [Selection Set]: ", _curSelSet);
         
-            // if a single item, help debug by dumping it to the console window.
-        if (_curSelSet.length == 1) {
-            var tmpObj = _viewer.model.getNodeById(_curSelSet[0]);
-            if (tmpObj)     // NOTE: 2D still returns Null for this because its not implemented
+            // if a single item, help debug by dumping it to the console window.  (TBD: only works for 3D for some reason)
+        if ((_viewer.model.is2d() === false) && (_curSelSet.length === 1)) {
+            //var tmpObj = _viewer.model.getData().instanceTree.dbIdToNode[_curSelSet[0]];
+            var tmpObj = _viewer.model.getData().instanceTree.dbIdToNode[_curSelSet[0]];
+            if (tmpObj)
                 console.debug(tmpObj);
         }
     });
