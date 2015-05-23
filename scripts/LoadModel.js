@@ -164,11 +164,12 @@ function initializeViewer() {
         console.log("LmvDbg: [Selection Set]: ", _curSelSet);
         
             // if a single item, help debug by dumping it to the console window.
+        //TODO: Have to retrive name/children using new InstanceTree API
+        /*
         if (_curSelSet.length == 1) {
-            var tmpObj = _viewer.model.getNodeById(_curSelSet[0]);
-            if (tmpObj)     // NOTE: 2D still returns Null for this because its not implemented
-                console.debug(tmpObj);
+            console.debug(_curSelSet[0]);
         }
+        */
     });
     
         // NOTE: other events you can respond to:
