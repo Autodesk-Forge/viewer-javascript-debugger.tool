@@ -162,14 +162,6 @@ function initializeViewer() {
     _viewer.addEventListener("selection", function (event) {
         _curSelSet = event.dbIdArray;
         console.log("LmvDbg: [Selection Set]: ", _curSelSet);
-        
-            // if a single item, help debug by dumping it to the console window.  (TBD: only works for 3D for some reason)
-        if ((_viewer.model.is2d() === false) && (_curSelSet.length === 1)) {
-            //var tmpObj = _viewer.model.getData().instanceTree.dbIdToNode[_curSelSet[0]];
-            var tmpObj = _viewer.model.getData().instanceTree.dbIdToNode[_curSelSet[0]];
-            if (tmpObj)
-                console.debug(tmpObj);
-        }
     });
     
         // NOTE: other events you can respond to:
