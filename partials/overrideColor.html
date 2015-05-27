@@ -92,7 +92,7 @@
     function getObjsBasedOnSomeCondition(objs1, objs2) {
         _viewer.getObjectTree(function(objTree) {
             var root = objTree.getRootId();
-            objTree.enumNodeChildren(root, function(dbId){
+            objTree.enumNodeChildren(root, function(dbId) {
                 
                     //skip non-leaf tree nodes
                 if (objTree.getChildCount() > 0)
