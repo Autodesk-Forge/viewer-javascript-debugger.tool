@@ -72,7 +72,7 @@
     $("#bn_deselect").click(function(evt) {  
         evt.preventDefault();
 
-        _viewer.deselect(_curSelSet);
+        _viewer.deselect(_viewer.getSelection());
     });
 
     $("#bn_clearSelection").click(function(evt) {  
@@ -84,35 +84,36 @@
     $("#bn_hide").click(function(evt) {  
         evt.preventDefault();
 
-        _viewer.hide(_curSelSet);
+        _viewer.hide(_viewer.getSelection());
     });
     
     $("#bn_show").click(function(evt) {  
         evt.preventDefault();
 
-        _viewer.show(_curSelSet);
+        _viewer.show(_viewer.getSelection());
     });
 
     $("#bn_fitToView").click(function(evt) {  
         evt.preventDefault();
 
-        _viewer.fitToView(_curSelSet);
+        _viewer.fitToView(_viewer.getSelection());
     });
     
     $("#bn_isolate").click(function(evt) {  
         evt.preventDefault();
 
-        _viewer.isolate(_curSelSet);
+        _viewer.isolate(_viewer.getSelection());
     });
 
     $("#bn_properties").click(function(evt) {  
         evt.preventDefault();
         
-        if (_curSelSet.length > 1) {
+        //if (_viewer.getSelectionCount() > 1) {
+        if (_viewer.getSelection().length > 1) {
             alert("Can only get properties when a single item is selected");
         }
         else {
-            _viewer.getProperties(_curSelSet[0], propsDisplayFuncTmp, propsErrorFuncTmp);
+            _viewer.getProperties(_viewer.getSelection()[0], propsDisplayFuncTmp, propsErrorFuncTmp);
         }
     });
 
@@ -268,11 +269,12 @@
     function printCurrentSelSet() {
         var tmpStr;
         
-        if (_curSelSet.length == 0) {
+        //if (_viewer.getSelectionCount() === 0) {
+        if (_viewer.getSelection().length === 0) {
             tmpStr = "*NONE*"
         }
         else {
-            tmpStr = "[ " + _curSelSet + " ]";
+            tmpStr = "[ " + _viewer.getSelection() + " ]";
         }
         $("#txt_curSelSet").val(tmpStr); 
     }
