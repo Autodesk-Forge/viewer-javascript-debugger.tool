@@ -10,7 +10,6 @@
 
     // some global vars  (TBD: consider consolidating into an object)
 var _viewer = null;     // the viewer
-var _curSelSet = [];    // init to empty array
 var _savedGlobalCamera = null;
 var _loadedDocument = null;
 var _views2D = null;
@@ -130,7 +129,6 @@ function switchSheet() {
     
     if (_viewer !== null) {
         _viewer.tearDown();     // delete everything associated with the current loaded asset
-        _curSelSet = [];
         _savedGlobalCamera = null;
         _savedViewerStates = [];
     }
@@ -145,7 +143,6 @@ function initializeViewer() {
     if (_viewer !== null) {
         _viewer.uninitialize();
         _viewer = null;
-        _curSelSet = [];
         _savedGlobalCamera = null;
         _savedViewerStates = [];
     }
@@ -159,17 +156,6 @@ function initializeViewer() {
         alert("ERROR: Couldn't initialize viewer!");
         console.log("ERROR Code: " + retCode);      // TBD: do real error handling here
     }
-    _viewer.addEventListener("selection", function (event) {
-        _curSelSet = event.dbIdArray;
-        console.log("LmvDbg: [Selection Set]: ", _curSelSet);
-        
-            // if a single item, help debug by dumping it to the console window.
-        if (_curSelSet.length == 1) {
-            var tmpObj = _viewer.model.getNodeById(_curSelSet[0]);
-            if (tmpObj)     // NOTE: 2D still returns Null for this because its not implemented
-                console.debug(tmpObj);
-        }
-    });
     
         // NOTE: other events you can respond to:
     //Autodesk.Viewing.GEOMETRY_LOADED_EVENT       = 'geometry_loaded';
