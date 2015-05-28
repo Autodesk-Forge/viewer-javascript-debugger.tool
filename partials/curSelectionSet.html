@@ -14,6 +14,7 @@
         <button id="bn_deselect" class="btn btn-danger">Deselect</button>
         <button id="bn_clearSelection" class="btn btn-primary">Clear</button>
         <button id="bn_hide" class="btn btn-primary">Hide</button>
+        <button id="bn_show" class="btn btn-primary">Show</button>
         <button id="bn_isolate" class="btn btn-primary">Isolate</button>
         <button id="bn_fitToView" class="btn btn-primary">Fit To View</button>
         <button id="bn_properties" class="btn btn-primary">Properties</button>
@@ -29,20 +30,49 @@
         <button id="bn_manToggleSelect" class="btn btn-primary">Toggle Select</button>
         <button id="bn_manDeselect" class="btn btn-danger">Deselect</button>
         <button id="bn_manHide" class="btn btn-primary">Hide</button>
+        <button id="bn_manShow" class="btn btn-primary">Show</button>
         <button id="bn_manToggleVis" class="btn btn-primary">Toggle Visibility</button>
         <button id="bn_manIsolate" class="btn btn-primary">Isolate</button>
         <button id="bn_manFitToView" class="btn btn-primary">Fit To View</button>
         <button id="bn_manProperties" class="btn btn-primary">Properties</button>
     </div>
     
+    <label>Selection Set Info</label>
+    <div class="form-group">
+        <button id="bn_getSelection" class="btn btn-primary">Get Selection</button>
+        <button id="bn_getSelectionVisibility" class="btn btn-primary">Get Selection Visibility</button>
+        <button id="bn_getSelectionCount" class="btn btn-primary">Get Selection Count</button>
+    </div>
+    
 </form>
 
-<script>
+<script>        
+    $("#bn_getSelection").click(function(evt) {  
+        evt.preventDefault();
+
+        var objs = _viewer.getSelection();
+        console.log("Selection: %O", objs);
+    });
+    
+    $("#bn_getSelectionVisibility").click(function(evt) {  
+        evt.preventDefault();
+
+        var objs = _viewer.getSelectionVisibility();
+        console.log("Selection Visibility: %O", objs);
+    });
+    
+    $("#bn_getSelectionCount").click(function(evt) {  
+        evt.preventDefault();
+
+        var num = _viewer.getSelectionCount();
+        console.log("Selection Count: %d", num);
+    });
+        
         // callbacks for the Current Selection Set
     $("#bn_deselect").click(function(evt) {  
         evt.preventDefault();
 
-        _viewer.deselect(_curSelSet);
+        _viewer.deselect(_viewer.getSelection());
     });
 
     $("#bn_clearSelection").click(function(evt) {  
@@ -53,37 +83,37 @@
 
     $("#bn_hide").click(function(evt) {  
         evt.preventDefault();
-        
-            // NOTE:  I would expect to be able to pass in regular DbIDs here, but I instead have to pass
-            // in Node objects.  A future version of the API will likely address this, but for now, pass in Nodes.
-        var nodeIdArr = [];
-        for (i=0;i<_curSelSet.length;i++)
-            nodeIdArr.push(_viewer.model.getNodeById(_curSelSet[i]));
 
-        //_viewer.hide(_curSelSet);  // TBD: switch this back when API is cleaned up.
-        _viewer.hide(nodeIdArr);
+        _viewer.hide(_viewer.getSelection());
+    });
+    
+    $("#bn_show").click(function(evt) {  
+        evt.preventDefault();
+
+        _viewer.show(_viewer.getSelection());
     });
 
     $("#bn_fitToView").click(function(evt) {  
         evt.preventDefault();
 
-        _viewer.fitToView(_curSelSet);
+        _viewer.fitToView(_viewer.getSelection());
     });
     
     $("#bn_isolate").click(function(evt) {  
         evt.preventDefault();
 
-        _viewer.isolateById(_curSelSet);
+        _viewer.isolate(_viewer.getSelection());
     });
 
     $("#bn_properties").click(function(evt) {  
         evt.preventDefault();
         
-        if (_curSelSet.length > 1) {
+        //if (_viewer.getSelectionCount() > 1) {
+        if (_viewer.getSelection().length > 1) {
             alert("Can only get properties when a single item is selected");
         }
         else {
-            _viewer.getProperties(_curSelSet[0], propsDisplayFuncTmp, propsErrorFuncTmp);
+            _viewer.getProperties(_viewer.getSelection()[0], propsDisplayFuncTmp, propsErrorFuncTmp);
         }
     });
 
@@ -128,14 +158,18 @@
         if (manSelSet.length == 0)
             alert("No Object IDs specified.");
         else {
-                // NOTE:  I would expect to be able to pass in regular DbIDs here, but I instead have to pass
-                // in Node objects.  A future version of the API will likely address this, but for now, pass in Nodes.
-            var nodeIdArr = [];
-            for (i=0;i<manSelSet.length;i++)
-                nodeIdArr.push(_viewer.model.getNodeById(manSelSet[i]));
-
-            //_viewer.hide(manSelSet);  // TBD: switch this back when API is cleaned up.
-            _viewer.hide(nodeIdArr);
+            _viewer.hide(manSelSet);
+        }
+    });
+    
+    $("#bn_manShow").click(function(evt) {  
+        evt.preventDefault();
+                
+        var manSelSet = parseManualSelSet();
+        if (manSelSet.length == 0)
+            alert("No Object IDs specified.");
+        else {
+            _viewer.show(manSelSet);
         }
     });
     
@@ -148,12 +182,7 @@
         else if (manSelSet.length > 1)
             alert("Only one item can be specified.");
         else {
-                // NOTE:  I would expect to be able to pass in regular DbIDs here, but I instead have to pass
-                // in Node objects.  A future version of the API will likely address this, but for now, pass in Nodes.
-            var tmpObj = _viewer.model.getNodeById(manSelSet[0]);
-            _viewer.toggleVisibility(tmpObj);
-
-            //_viewer.toggleVisibility(manSelSet[0]);  // can only pass a single id, not an array
+            _viewer.toggleVisibility(manSelSet[0]);  // can only pass a single id, not an array
         }
     });
     
@@ -164,7 +193,7 @@
         if (manSelSet.length == 0)
             alert("No Object IDs specified.");
         else
-            _viewer.isolateById(manSelSet);
+            _viewer.isolate(manSelSet);
     });
     
     $("#bn_manFitToView").click(function(evt) {  
@@ -240,11 +269,12 @@
     function printCurrentSelSet() {
         var tmpStr;
         
-        if (_curSelSet.length == 0) {
+        //if (_viewer.getSelectionCount() === 0) {
+        if (_viewer.getSelection().length === 0) {
             tmpStr = "*NONE*"
         }
         else {
-            tmpStr = "[ " + _curSelSet + " ]";
+            tmpStr = "[ " + _viewer.getSelection() + " ]";
         }
         $("#txt_curSelSet").val(tmpStr); 
     }

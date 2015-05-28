@@ -16,6 +16,14 @@
         <h4>Viewer3d.anyLayerHidden();</h4>
         <h5>Returns true if any layer is hidden.</h5>
         <button id="bn_anyLayerHidden" class="btn btn-primary">Any Layer Hidden?</button>
+        
+        <h4>Viewer3d.getHiddenNodes();</h4>
+        <h5>Returns true if any layer is hidden.</h5>
+        <button id="bn_getHiddenNodes" class="btn btn-primary">Get Hidden Nodes</button>
+        
+        <h4>Viewer3d.getIsolatedNodes();</h4>
+        <h5>Returns true if any layer is hidden.</h5>
+        <button id="bn_getIsolatedNodes" class="btn btn-primary">Get Isolated Nodes</button>
     </div>
 </form>
 
@@ -44,6 +52,18 @@
             alert("TRUE - there is");
         else
             alert("FALSE - none are hidden");
+    });
+    
+    $("#bn_getHiddenNodes").click(function(evt) {  
+        evt.preventDefault();
+        var nodes = _viewer.getHiddenNodes();
+        console.log("Hidden Nodes: %O", nodes);
+    });
+    
+    $("#bn_getIsolatedNodes").click(function(evt) {  
+        evt.preventDefault();
+        var nodes = _viewer.getIsolatedNodes();
+        console.log("Isolated Nodes: %O", nodes);
     });
     
     console.log("LmvDbg: loaded code snippet [click to see source in debugger -->]");
