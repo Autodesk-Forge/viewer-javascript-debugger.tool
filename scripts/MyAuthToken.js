@@ -25,15 +25,15 @@ function MyAuthToken(env)
 {
     if (env === "PROD") {
         //this.tokenService = "http://localhost:5000/auth";
-        this.tokenService = "http://salty-caverns-3017.herokuapp.com/auth";
+        this.tokenService = "https://salty-caverns-3017.herokuapp.com/auth";
     }
     else if (env === "STG") {
         //this.tokenService = "http://localhost:5000/auth-stg";
-        this.tokenService = "http://salty-caverns-3017.herokuapp.com/auth-stg";
+        this.tokenService = "https://salty-caverns-3017.herokuapp.com/auth-stg";
     }
     else if (env === "DEV") {
         //this.tokenService = "http://localhost:5000/auth-dev";
-        this.tokenService = "http://salty-caverns-3017.herokuapp.com/auth-dev";
+        this.tokenService = "https://salty-caverns-3017.herokuapp.com/auth-dev";
     }
     else {
         alert("DEVELOPER ERROR: No valid environment set for MyAuthToken()");
