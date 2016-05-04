@@ -1,70 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-    
+
 <!-- LmvDbg: This is a test app to help test the API and allow people to learn and copy snippets of
      source.  It will continually evolve along with the API and will always be a work in progress
-     of "best parctices".  If you have any specific things you want added or have a suggestion of 
+     of "best parctices".  If you have any specific things you want added or have a suggestion of
      how to do something a better way, don't hold back... this is here to support the developer community.
 
      Email me:  jim.awe@autodesk.com
 -->
- 
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
     <title>LMV Dbg App</title>
-    
+
         <!-- bootstrap and jQuery -->
     <link href="./stylesheets/libs/bootstrap.min.css" rel="stylesheet">
     <script src="./scripts/libs/jquery/jquery-2.1.1.min.js"></script>   <!-- get it local so it works in China! -->
     <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
-    
+
         <!-- jscolor color picker library -->
     <script src="./scripts/libs/jscolor/jscolor.js"></script>
-    
+
         <!-- jsTree library -->
     <link rel="stylesheet" href="./scripts/libs/jstree/dist/themes/default/style.min.css" />
     <script src="./scripts/libs/jstree/dist/jstree.min.js"></script>
-    
+
         <!-- prism syntax higlighting library -->
     <link href="./scripts/libs/prism/prism.css" rel="stylesheet" />
     <script src="./scripts/libs/prism/prism.min.js"></script>
-    
+
         <!-- Autodesk Viewer (from server: PROD) -->
     <!--<link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.css" type="text/css">
     <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js"></script>-->
-    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.css?v=v1.2.18" type="text/css">
-    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js?v=v1.2.18"></script>
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.css?v=v1.2.23" type="text/css">
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js?v=v1.2.23"></script>
 
         <!-- Autodesk Viewer (from server: STAGING) -->
     <!--<link rel="stylesheet" href="https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/style.css?v=v1.1.145" type="text/css">
     <script src="https://developer-stg.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js?v=v1.1.145"></script>-->
-        
+
         <!-- This apps includes -->
     <link href="./stylesheets/theme.css" rel="stylesheet">
     <script src="./scripts/MyAuthToken.js"></script>
     <script src="./scripts/DebugUtils.js"></script>
- 
+
     <script>
-                
+
         $(document).ready(function() {
-            
-            $("#codeSnippetLinks").on("click", "a", function(evt) {  
+
+            $("#codeSnippetLinks").on("click", "a", function(evt) {
                 evt.preventDefault();
-                
+
                 var $link = $(evt.target);
                 //var url = "http://127.0.0.1:3000/" + $link.attr("href");  // if you need a node.js server to serve data from another service
                 var url = $link.attr("href");   // our code snippets are local to this client app so we just need a relative path
                 console.log("LmvDbg: loading " + url);
-                
+
                     // load the form in
                 $.get(url, function(data) {
                     var formSection = $("div.lmvDbg_swap"); // replace contents at this DOM node with new HTML
                     formSection.html(data);
                     formSection.hide().fadeIn(500);
-                    
+
                         // if its a "partials/" page, then take the code and put it into the source code panel
                     var prefixStr = url.substring(0, 8);
                     if (prefixStr === "partials") {
@@ -75,23 +75,23 @@
                         sourceSection.hide().fadeIn(500);
                     }
                 });
-                
+
             });
-            
+
         });
-        
+
             // prism syntax highlighter needs html escaped with ampersand chars
-        function escapeHTML(s) { 
+        function escapeHTML(s) {
             return s.replace(/&/g, '&amp;')
                     .replace(/"/g, '&quot;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
         }
-        
-       
+
+
     </script>
 </head>
- 
+
 <body onload="loadInitialModel();" style="margin:0" oncontextmenu="return false;">  <!-- NOTE: setting oncontextmenu=false allows the viewer context menu to work (for things like "Hide Selected") -->
     <div class="container">
         <div class="row form-buffer">
@@ -115,13 +115,13 @@
             </div>
         </div>
     </div>
-            
+
           <!-- Viewer and API function selection -->
     <div class="container">
         <div class="row">
-            <div class="col-md-8" id="viewer">          <!-- Viewer goes here -->        
+            <div class="col-md-8" id="viewer">          <!-- Viewer goes here -->
                 <!-- Upon the viewer initalizaiton, it will append a div to the above div to insert the viewer.  It
-                    will use 100% width and height so that it will fill up whatever the above div's dimensions are. 
+                    will use 100% width and height so that it will fill up whatever the above div's dimensions are.
                     NOTE: I had to set height in theme.css for this object or bootstrap would set height to 1px -->
                 <div id="lmvdbg_toolbar_canvas_div" style="position: relative; top: 10px; left: 0px; z-index: 200;"></div>
                     <!-- the Toolbars test function will position the in-canvas toolbar using this div.  See partials/toolbars.html -->
@@ -157,7 +157,7 @@
             </div>
         </div>
     </div>
-    
+
     <br/>
 
     <div class="container">
@@ -165,20 +165,20 @@
             <!-- form for a specific function will go here -->
         </div>
     </div>
-    
+
     <br/>
-    
-    <div class="container">        
+
+    <div class="container">
         <pre class="language-markup">
             <code class="language-markup">
                 <!-- source code for a specific example goes here -->
-            </code>  
+            </code>
         </pre>
 
     </div>
-    
+
     <script src="./scripts/LoadModel.js"></script>
 
 </body>
- 
+
 </html>
