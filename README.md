@@ -10,6 +10,7 @@ See the README file that is part of the live app (by clicking on the README link
 
 ## Demo
 [Live Demo](http://developer-autodesk.github.io/view.and.data-javascript-lmvdbg.tool/)
+
 ![](./lmvdbg-screenshot.png)
 
 ## Deploy
