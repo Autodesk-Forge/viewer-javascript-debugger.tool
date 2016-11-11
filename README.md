@@ -9,7 +9,7 @@ The models available to use are hardwired into the code and rely on the Consumer
 See the README file that is part of the live app (by clicking on the README link) for more details on how to use this app.
 
 ## Demo
-[Live Demo](http://developer-autodesk.github.io/view.and.data-javascript-lmvdbg.tool/)
+[Live Demo](http://developer-autodesk.github.io/viewer-javascript-debugger.tool/)
 
 ![](./lmvdbg-screenshot.png)
 
@@ -17,4 +17,4 @@ See the README file that is part of the live app (by clicking on the README link
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 ## Usage
-Following [this link](http://developer-autodesk.github.io/view.and.data-javascript-lmvdbg.tool/), then click on the menu links on the right of the page to see sample codes associated with each viewer functionalities.
+Following [this link](http://developer-autodesk.github.io/viewer-javascript-debugger.tool/), then click on the menu links on the right of the page to see sample codes associated with each viewer functionalities.
