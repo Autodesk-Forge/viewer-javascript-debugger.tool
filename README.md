@@ -4,12 +4,12 @@
 
 Designed to test out all the API functions of the <b>Viewer</b>. You can use as a learning and diagnostic tool for the library and to steal source code snippets to jumpstart your own app.
 
-The models available to use are hardwired into the code and rely on the ConsumerKey and ConsumerSecret keys for this app.  If you want to add your own models, you will have to get them translated to produce your unique URNS. Then you will need to swap out the AuthTokenServer reference in MyAuthToken.js (currently pointing to my token service).  If you need suggestions on how to create your own AuthTokenService, there is a template service [here](https://github.com/Developer-Autodesk/AuthTokenServer_Simple.git) for you to use:  
+The models available to use and Forge Client ID & Secret keys are hardwired into the code for this app.  If you want to add your own models, you will have to get them translated to produce your unique URNS. Then you will need to swap out the AuthTokenServer reference in MyAuthToken.js (currently pointing to testing token service).  If you need suggestions on how to create your own AuthTokenService, there is a tutorial [here](https://developer.autodesk.com/en/docs/oauth/v2/tutorials/get-2-legged-token/):  
 
 See the README file that is part of the live app (by clicking on the README link) for more details on how to use this app.
 
 ## Demo
-[Live Demo](http://developer-autodesk.github.io/viewer-javascript-debugger.tool/)
+[Live Demo](http://autodesk-forge.github.io/viewer-javascript-debugger.tool/)
 
 ![](./lmvdbg-screenshot.png)
 
@@ -17,4 +17,4 @@ See the README file that is part of the live app (by clicking on the README link
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 ## Usage
-Following [this link](http://developer-autodesk.github.io/viewer-javascript-debugger.tool/), then click on the menu links on the right of the page to see sample codes associated with each viewer functionalities.
+Following [this link](http://autodesk-forge.github.io/viewer-javascript-debugger.tool/), then click on the menu links on the right of the page to see sample codes associated with each viewer functionalities.
