@@ -11,7 +11,7 @@ See the README file that is part of the live app (by clicking on the README link
 ## Demo
 [Live Demo](http://autodesk-forge.github.io/viewer-javascript-debugger.tool/)
 
-![](./lmvdbg-screenshot.png)
+![thumbnail](./lmvdbg-screenshot.png)
 
 ## Deploy to Heroku
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
