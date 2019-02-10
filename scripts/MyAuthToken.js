@@ -38,7 +38,7 @@ function MyAuthToken(env)
     else {
         alert("DEVELOPER ERROR: No valid environment set for MyAuthToken()");
     }
-    
+
     this.token = "";
     this.expires_in = 0;
     this.timestamp = 0;

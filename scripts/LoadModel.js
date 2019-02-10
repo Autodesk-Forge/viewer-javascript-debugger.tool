@@ -265,8 +265,8 @@ function loadInitialModel() {
     
     var options = {};
     options.env = _viewerEnv;                // AutodeskProduction, AutodeskStaging, or AutodeskDevelopment (set in global var in this project)
-    options.getAccessToken = getAccessToken;
-    options.refreshToken   = getAccessToken;
+    options.accessToken = getAccessToken();
+    options.refreshToken   = getAccessToken();
     
     Autodesk.Viewing.Initializer(options, function() {
         loadDocument(_lmvModelOptions[0].urn);   // load first entry by default
